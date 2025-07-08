@@ -57,6 +57,6 @@ Technical Setup:
 wedding on vercel
 
 Authentication:
-1. Should guests create passwords or use magic links? no keep it simple and ask everyone to auth via google
+1. Should guests create passwords or use magic links? Let's keep it simple and use magic link
 2. Any specific signup flow preferences? keep it as simple as possible
 
