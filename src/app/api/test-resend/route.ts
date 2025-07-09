@@ -3,6 +3,14 @@ import { resend } from '@/lib/resend'
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if Resend is configured
+    if (!resend) {
+      return NextResponse.json({
+        error: 'Resend not configured',
+        details: 'RESEND_API_KEY environment variable is not set'
+      }, { status: 503 })
+    }
+
     // Test 1: Check if Resend API key is valid
     const domains = await resend.domains.list()
     

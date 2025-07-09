@@ -68,6 +68,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    // Check if Resend is configured
+    if (!resend) {
+      console.warn('Resend API key not configured')
+      return NextResponse.json({ 
+        error: 'Email service not configured. Please set RESEND_API_KEY in environment variables.' 
+      }, { status: 503 })
+    }
+
     let emailComponent
     let subject
     
