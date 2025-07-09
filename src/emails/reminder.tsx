@@ -29,7 +29,7 @@ export const ReminderEmail = ({ guestEmail }: ReminderEmailProps) => {
             </Text>
             
             <Text style={text}>
-              We hope you're as excited as we are about our upcoming wedding!
+              We hope you&apos;re as excited as we are about our upcoming wedding!
             </Text>
             
             <Heading style={h2}>Yishan & Yitong</Heading>
@@ -40,8 +40,8 @@ export const ReminderEmail = ({ guestEmail }: ReminderEmailProps) => {
             </Text>
             
             <Text style={text}>
-              We haven't received your RSVP yet, and we'd love to know if you can join us! 
-              Please visit our wedding website to let us know if you'll be attending.
+              We haven&apos;t received your RSVP yet, and we&apos;d love to know if you can join us! 
+              Please visit our wedding website to let us know if you&apos;ll be attending.
             </Text>
             
             <Text style={text}>
@@ -51,7 +51,7 @@ export const ReminderEmail = ({ guestEmail }: ReminderEmailProps) => {
             </Text>
             
             <Text style={text}>
-              If you have any questions, please don't hesitate to reach out to us.
+              If you have any questions, please don&apos;t hesitate to reach out to us.
             </Text>
             
             <Text style={text}>

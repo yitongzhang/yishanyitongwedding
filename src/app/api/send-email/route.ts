@@ -8,34 +8,48 @@ import { render } from '@react-email/render'
 
 export async function POST(request: NextRequest) {
   try {
-    const cookieStore = cookies()
+    console.log('Send email API called')
+    
+    const cookieStore = await cookies()
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
           get(name: string) {
-            return cookieStore.get(name)?.value
+            const value = cookieStore.get(name)?.value
+            console.log(`Getting cookie ${name}:`, value ? 'exists' : 'missing')
+            return value
+          },
+          set(name: string, value: string, options: any) {
+            cookieStore.set({ name, value, ...options })
+          },
+          remove(name: string, options: any) {
+            cookieStore.set({ name, value: '', ...options })
           },
         },
       }
     )
 
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    
+    console.log('User check:', { user: user?.email, error: userError })
     
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Unauthorized - No user found' }, { status: 401 })
     }
 
     // Check if user is admin
-    const { data: guestData } = await supabase
+    const { data: guestData, error: guestError } = await supabase
       .from('guests')
       .select('is_admin')
-      .eq('email', user.email)
+      .eq('email', user.email!)
       .single()
+    
+    console.log('Admin check:', { isAdmin: guestData?.is_admin, error: guestError })
 
     if (!guestData?.is_admin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Unauthorized - Not an admin' }, { status: 401 })
     }
 
     const { type, recipients } = await request.json()

@@ -24,7 +24,7 @@ export const SaveTheDateEmail = ({ guestEmail }: SaveTheDateEmailProps) => {
             <Heading style={h1}>Save the Date!</Heading>
             
             <Text style={text}>
-              You're invited to celebrate the wedding of
+              You&apos;re invited to celebrate the wedding of
             </Text>
             
             <Heading style={h2}>Yishan & Yitong</Heading>
@@ -38,7 +38,7 @@ export const SaveTheDateEmail = ({ guestEmail }: SaveTheDateEmailProps) => {
             </Text>
             
             <Text style={text}>
-              We can't wait to celebrate this special day with you! 
+              We can&apos;t wait to celebrate this special day with you! 
               More details and RSVP information will follow soon.
             </Text>
             

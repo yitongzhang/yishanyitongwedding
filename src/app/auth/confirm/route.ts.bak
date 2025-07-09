@@ -1,0 +1,77 @@
+import { createServerClient } from '@supabase/ssr'
+import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+
+export async function GET(request: NextRequest) {
+  const { searchParams, origin } = new URL(request.url)
+  const token_hash = searchParams.get('token_hash')
+  const type = searchParams.get('type')
+  const next = searchParams.get('next') ?? '/'
+  
+  console.log('Auth confirm called:', { 
+    token_hash: !!token_hash, 
+    type, 
+    next,
+    origin,
+    url: request.url 
+  })
+
+  if (token_hash && type) {
+    const cookieStore = await cookies()
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            const value = cookieStore.get(name)?.value
+            console.log(`Auth confirm - Getting cookie ${name}:`, value ? 'exists' : 'missing')
+            return value
+          },
+          set(name: string, value: string, options: any) {
+            console.log(`Auth confirm - Setting cookie ${name}`)
+            cookieStore.set({ name, value, ...options })
+          },
+          remove(name: string, options: any) {
+            console.log(`Auth confirm - Removing cookie ${name}`)
+            cookieStore.set({ name, value: '', ...options })
+          },
+        },
+      }
+    )
+
+    const { data, error } = await supabase.auth.verifyOtp({
+      type: type as any,
+      token_hash,
+    })
+    
+    console.log('OTP verification result:', { 
+      error: error?.message || null,
+      data: data ? 'Session created' : 'No session',
+      user: data?.user?.email || null
+    })
+
+    if (!error && data?.session) {
+      // Ensure cookies are properly set
+      const sessionCookies = await supabase.auth.getSession()
+      console.log('Session after verification:', sessionCookies.data.session?.user?.email || 'No session')
+      
+      // Add a small delay to ensure cookies are set
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      // Redirect to home page which will handle the routing based on user type
+      const redirectUrl = new URL('/', origin)
+      console.log('Redirecting to:', redirectUrl.toString())
+      return NextResponse.redirect(redirectUrl)
+    } else {
+      console.error('OTP verification failed:', error)
+      const errorUrl = new URL('/auth/auth-code-error', origin)
+      errorUrl.searchParams.set('error', error?.message || 'Unknown error')
+      return NextResponse.redirect(errorUrl)
+    }
+  }
+
+  // Return the user to an error page with some instructions
+  console.log('Missing token_hash or type, redirecting to error page')
+  return NextResponse.redirect(new URL('/auth/auth-code-error', request.url))
+}

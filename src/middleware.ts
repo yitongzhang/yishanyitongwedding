@@ -2,6 +2,9 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  console.log(`Middleware: Processing ${pathname}`)
+  
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -54,7 +57,11 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  await supabase.auth.getUser()
+  // Only check auth for protected routes
+  if (pathname.startsWith('/admin') || pathname.startsWith('/dashboard')) {
+    const { data: { session } } = await supabase.auth.getSession()
+    console.log(`Middleware: Auth check for ${pathname}, user: ${session?.user?.email || 'none'}`)
+  }
 
   return response
 }

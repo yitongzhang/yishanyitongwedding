@@ -1,19 +1,19 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 
 interface Guest {
   id: string
   email: string
-  created_at: string
-  is_admin: boolean
-  has_rsvped: boolean
+  created_at: string | null
+  is_admin: boolean | null
+  has_rsvped: boolean | null
   is_attending: boolean | null
   dietary_preferences: string | null
-  has_plus_one: boolean
+  has_plus_one: boolean | null
   plus_one_name: string | null
   plus_one_email: string | null
   plus_one_dietary_preferences: string | null
@@ -36,41 +36,7 @@ export default function AdminDashboard() {
     plusOnes: 0
   })
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      if (!user) {
-        router.push('/')
-        return
-      }
-
-      setUser(user)
-
-      // Check if user is admin
-      const { data: guestData } = await supabase
-        .from('guests')
-        .select('is_admin')
-        .eq('email', user.email)
-        .single()
-
-      if (!guestData?.is_admin) {
-        router.push('/dashboard')
-        return
-      }
-
-      await loadGuestsData()
-    }
-
-    getUser()
-  }, [router, supabase])
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/')
-  }
-
-  const loadGuestsData = async () => {
+  const loadGuestsData = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('guests')
@@ -94,6 +60,40 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false)
     }
+  }, [supabase])
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        router.push('/')
+        return
+      }
+
+      setUser(user)
+
+      // Check if user is admin
+      const { data: guestData } = await supabase
+        .from('guests')
+        .select('is_admin')
+        .eq('email', user.email!)
+        .single()
+
+      if (!guestData?.is_admin) {
+        router.push('/dashboard')
+        return
+      }
+
+      await loadGuestsData()
+    }
+
+    getUser()
+  }, [router, supabase, loadGuestsData])
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    router.push('/')
   }
 
   const formatDate = (dateString: string | null) => {
@@ -166,7 +166,7 @@ export default function AdminDashboard() {
             <p className="text-2xl font-bold text-blue-600">{stats.total}</p>
           </div>
           <div className="bg-green-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-green-800">RSVP'd</h3>
+            <h3 className="text-lg font-semibold text-green-800">RSVP&apos;d</h3>
             <p className="text-2xl font-bold text-green-600">{stats.rsvped}</p>
           </div>
           <div className="bg-yellow-50 p-4 rounded-lg">
@@ -200,6 +200,22 @@ export default function AdminDashboard() {
               className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:bg-gray-300"
             >
               {emailLoading ? 'Sending...' : 'Send RSVP Reminder'}
+            </button>
+            <button
+              onClick={async () => {
+                try {
+                  const response = await fetch('/api/test-auth')
+                  const data = await response.json()
+                  console.log('Auth test result:', data)
+                  alert(`Auth test: ${data.authenticated ? 'Authenticated' : 'Not authenticated'}\nUser: ${data.user?.email || 'None'}\nError: ${data.error || 'None'}`)
+                } catch (error) {
+                  console.error('Test auth error:', error)
+                  alert('Test auth failed')
+                }
+              }}
+              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+            >
+              Test Auth
             </button>
           </div>
         </div>

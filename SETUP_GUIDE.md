@@ -97,7 +97,7 @@ Then fill in:
 
 The database has these test users:
 - **Admins:** zha.yitong@gmail.com, yishan.zhang007@gmail.com
-- **Guests:** cfeng.charlie@gmail.com, yitong@votegora.com
+- **Guests:** cfeng.charlie@gmail.com, yitong@voteagora.com
 
 ## Key Features Available
 

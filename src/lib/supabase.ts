@@ -1,6 +1,5 @@
-// Re-export the client creation functions
+// Re-export the client creation function only (for client components)
 export { createClient } from './supabase/client'
-export { createClient as createServerClient } from './supabase/server'
 
 // Re-export types
 export type { Database, Tables, TablesInsert, TablesUpdate } from './supabase/types'

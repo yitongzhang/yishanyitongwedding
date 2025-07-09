@@ -6,7 +6,7 @@ export default function AuthCodeError() {
       <div className="max-w-md mx-auto text-center">
         <h1 className="text-2xl font-bold mb-4">Authentication Error</h1>
         <p className="mb-6">
-          Sorry, we couldn't authenticate you. The magic link may have expired or already been used.
+          Sorry, we couldn&apos;t authenticate you. The magic link may have expired or already been used.
         </p>
         <Link 
           href="/"

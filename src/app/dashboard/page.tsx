@@ -8,10 +8,10 @@ import { User } from '@supabase/supabase-js'
 interface Guest {
   id: string
   email: string
-  has_rsvped: boolean
+  has_rsvped: boolean | null
   is_attending: boolean | null
   dietary_preferences: string | null
-  has_plus_one: boolean
+  has_plus_one: boolean | null
   plus_one_name: string | null
   plus_one_email: string | null
   plus_one_dietary_preferences: string | null
@@ -51,7 +51,7 @@ export default function Dashboard() {
       const { data: guestData } = await supabase
         .from('guests')
         .select('*')
-        .eq('email', user.email)
+        .eq('email', user.email!)
         .single()
 
       if (guestData?.is_admin) {
@@ -64,7 +64,7 @@ export default function Dashboard() {
         setFormData({
           is_attending: guestData.is_attending,
           dietary_preferences: guestData.dietary_preferences || '',
-          has_plus_one: guestData.has_plus_one,
+          has_plus_one: guestData.has_plus_one ?? false,
           plus_one_name: guestData.plus_one_name || '',
           plus_one_email: guestData.plus_one_email || '',
           plus_one_dietary_preferences: guestData.plus_one_dietary_preferences || '',
@@ -164,7 +164,7 @@ export default function Dashboard() {
           <p className="text-lg mb-2"><strong>Date:</strong> October 4th, 2025</p>
           <p className="text-lg mb-2"><strong>Venue:</strong> Penny Roma</p>
           <p className="text-lg mb-2"><strong>Address:</strong> 3000 20th St, San Francisco, CA 94110</p>
-          <p className="text-lg">We can't wait to celebrate with you!</p>
+          <p className="text-lg">We can&apos;t wait to celebrate with you!</p>
         </div>
 
         <div className="bg-white p-6 rounded-lg border">
@@ -193,7 +193,7 @@ export default function Dashboard() {
                     onChange={(e) => setFormData({...formData, is_attending: true})}
                     className="mr-2"
                   />
-                  Yes, I'll be there!
+                  Yes, I&apos;ll be there!
                 </label>
                 <label className="flex items-center">
                   <input
@@ -204,7 +204,7 @@ export default function Dashboard() {
                     onChange={(e) => setFormData({...formData, is_attending: false})}
                     className="mr-2"
                   />
-                  Sorry, I can't make it
+                  Sorry, I can&apos;t make it
                 </label>
               </div>
             </div>
