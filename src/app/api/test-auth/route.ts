@@ -10,6 +10,10 @@ export async function GET(request: NextRequest) {
     const allCookies = cookieStore.getAll()
     console.log('All cookies:', allCookies.map(c => ({ name: c.name, hasValue: !!c.value })))
     
+    // Check for Authorization header
+    const authHeader = request.headers.get('Authorization')
+    console.log('Authorization header:', authHeader ? 'present' : 'missing')
+    
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -27,6 +31,11 @@ export async function GET(request: NextRequest) {
             cookieStore.set({ name, value: '', ...options })
           },
         },
+        global: {
+          headers: {
+            Authorization: authHeader || '',
+          },
+        },
       }
     )
 
@@ -37,6 +46,7 @@ export async function GET(request: NextRequest) {
       user: user ? { email: user.email, id: user.id } : null,
       error: error?.message || null,
       cookies: allCookies.map(c => c.name),
+      hasAuthHeader: !!authHeader,
     })
   } catch (error) {
     return NextResponse.json(

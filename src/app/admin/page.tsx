@@ -104,6 +104,9 @@ export default function AdminDashboard() {
   const sendEmail = async (type: 'save-the-date' | 'reminder') => {
     setEmailLoading(true)
     try {
+      // Get the current session
+      const { data: { session } } = await supabase.auth.getSession()
+      
       const recipients = guests
         .filter(guest => !guest.is_admin)
         .map(guest => guest.email)
@@ -112,7 +115,9 @@ export default function AdminDashboard() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': session?.access_token ? `Bearer ${session.access_token}` : ''
         },
+        credentials: 'include', // Include cookies in the request
         body: JSON.stringify({
           type,
           recipients,
@@ -204,7 +209,15 @@ export default function AdminDashboard() {
             <button
               onClick={async () => {
                 try {
-                  const response = await fetch('/api/test-auth')
+                  // Get the current session
+                  const { data: { session } } = await supabase.auth.getSession()
+                  
+                  const response = await fetch('/api/test-auth', {
+                    credentials: 'include',
+                    headers: {
+                      'Authorization': session?.access_token ? `Bearer ${session.access_token}` : ''
+                    }
+                  })
                   const data = await response.json()
                   console.log('Auth test result:', data)
                   alert(`Auth test: ${data.authenticated ? 'Authenticated' : 'Not authenticated'}\nUser: ${data.user?.email || 'None'}\nError: ${data.error || 'None'}`)

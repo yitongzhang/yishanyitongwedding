@@ -11,6 +11,11 @@ export async function POST(request: NextRequest) {
     console.log('Send email API called')
     
     const cookieStore = await cookies()
+    
+    // Check for Authorization header
+    const authHeader = request.headers.get('Authorization')
+    console.log('Authorization header:', authHeader ? 'present' : 'missing')
+    
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -26,6 +31,11 @@ export async function POST(request: NextRequest) {
           },
           remove(name: string, options: any) {
             cookieStore.set({ name, value: '', ...options })
+          },
+        },
+        global: {
+          headers: {
+            Authorization: authHeader || '',
           },
         },
       }
@@ -78,21 +88,25 @@ export async function POST(request: NextRequest) {
     
     for (const recipient of recipients) {
       try {
+        console.log(`Attempting to send ${type} email to ${recipient}`)
         const html = render(emailComponent({ guestEmail: recipient }))
         
         const { data, error } = await resend.emails.send({
-          from: 'Yishan & Yitong <noreply@yishanandyitong.wedding>',
+          from: 'Yishan & Yitong Wedding <onboarding@resend.dev>', // Temporarily use Resend's test domain
           to: recipient,
           subject,
           html,
         })
 
         if (error) {
+          console.error(`Failed to send to ${recipient}:`, error)
           results.push({ email: recipient, success: false, error: error.message })
         } else {
+          console.log(`Successfully sent to ${recipient}, ID:`, data?.id)
           results.push({ email: recipient, success: true, id: data?.id })
         }
       } catch (error) {
+        console.error(`Exception sending to ${recipient}:`, error)
         results.push({ 
           email: recipient, 
           success: false, 
@@ -100,6 +114,8 @@ export async function POST(request: NextRequest) {
         })
       }
     }
+    
+    console.log('Email send results:', results)
 
     return NextResponse.json({ results })
   } catch (error) {
