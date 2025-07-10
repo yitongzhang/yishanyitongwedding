@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
         const html = render(emailComponent({ guestEmail: recipient }))
         
         const { data, error } = await resend.emails.send({
-          from: 'Yishan & Yitong Wedding <onboarding@resend.dev>', // Temporarily use Resend's test domain
+          from: 'Yishan & Yitong Wedding <wedding@yishanandyitong.wedding>',
           to: recipient,
           subject,
           html,

@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     
     // Test 2: Try sending a test email
     const { data, error } = await resend.emails.send({
-      from: 'onboarding@resend.dev', // Use Resend's test domain
+      from: 'Yishan & Yitong Wedding <wedding@yishanandyitong.wedding>',
       to: 'delivered@resend.dev', // Use Resend's test email
       subject: 'Test Email',
       html: '<p>Test email from wedding website</p>',
