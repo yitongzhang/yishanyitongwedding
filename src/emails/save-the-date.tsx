@@ -38,10 +38,15 @@ export const SaveTheDateEmail = ({ guestEmail }: SaveTheDateEmailProps) => {
             </Text>
             
             <Text style={text}>
-              We can&apos;t wait to celebrate this special day with you! 
-              More details and RSVP information will follow soon.
+              We can&apos;t wait to celebrate this special day with you!
             </Text>
-            
+            <Text style={text}>
+              <strong>Please RSVP:</strong> Visit our website at{' '}
+              <a href="https://yishanandyitong.wedding" style={{ color: '#0070f3', textDecoration: 'underline' }}>
+                yishanandyitong.wedding
+              </a>{' '}
+              to let us know if you can join us!
+            </Text>
             <Text style={text}>
               With love,<br />
               Yishan & Yitong
