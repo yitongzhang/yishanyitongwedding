@@ -1,9 +1,9 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
+import SignInPrompt from '@/components/SignInPrompt'
 
 interface Guest {
   id: string
@@ -19,7 +19,6 @@ interface Guest {
 }
 
 export default function Dashboard() {
-  const router = useRouter()
   const supabase = createClient()
   const [user, setUser] = useState<User | null>(null)
   const [guest, setGuest] = useState<Guest | null>(null)
@@ -38,50 +37,68 @@ export default function Dashboard() {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { session } } = await supabase.auth.getSession()
+      setUser(session?.user ?? null)
       
-      if (!user) {
-        router.push('/')
-        return
-      }
+      if (session?.user) {
+        // Get guest data
+        const { data: guestData } = await supabase
+          .from('guests')
+          .select('*')
+          .eq('email', session.user.email!)
+          .single()
 
-      setUser(user)
-
-      // Check if user is admin
-      const { data: guestData } = await supabase
-        .from('guests')
-        .select('*')
-        .eq('email', user.email!)
-        .single()
-
-      if (guestData?.is_admin) {
-        router.push('/admin')
-        return
-      }
-
-      if (guestData) {
-        setGuest(guestData)
-        setFormData({
-          is_attending: guestData.is_attending,
-          dietary_preferences: guestData.dietary_preferences || '',
-          has_plus_one: guestData.has_plus_one ?? false,
-          plus_one_name: guestData.plus_one_name || '',
-          plus_one_email: guestData.plus_one_email || '',
-          plus_one_dietary_preferences: guestData.plus_one_dietary_preferences || '',
-          additional_notes: guestData.additional_notes || ''
-        })
+        if (guestData) {
+          setGuest(guestData)
+          setFormData({
+            is_attending: guestData.is_attending,
+            dietary_preferences: guestData.dietary_preferences || '',
+            has_plus_one: guestData.has_plus_one ?? false,
+            plus_one_name: guestData.plus_one_name || '',
+            plus_one_email: guestData.plus_one_email || '',
+            plus_one_dietary_preferences: guestData.plus_one_dietary_preferences || '',
+            additional_notes: guestData.additional_notes || ''
+          })
+        }
       }
       
       setLoading(false)
     }
 
     getUser()
-  }, [router, supabase])
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/')
-  }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user ?? null)
+        
+        if (session?.user) {
+          // Get guest data
+          const { data: guestData } = await supabase
+            .from('guests')
+            .select('*')
+            .eq('email', session.user.email!)
+            .single()
+
+          if (guestData) {
+            setGuest(guestData)
+            setFormData({
+              is_attending: guestData.is_attending,
+              dietary_preferences: guestData.dietary_preferences || '',
+              has_plus_one: guestData.has_plus_one ?? false,
+              plus_one_name: guestData.plus_one_name || '',
+              plus_one_email: guestData.plus_one_email || '',
+              plus_one_dietary_preferences: guestData.plus_one_dietary_preferences || '',
+              additional_notes: guestData.additional_notes || ''
+            })
+          }
+        } else {
+          setGuest(null)
+        }
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [supabase])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -136,30 +153,47 @@ export default function Dashboard() {
     )
   }
 
+  // If not logged in, show sign-in prompt
+  if (!user) {
+    return (
+      <main className="min-h-screen p-8 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold mb-4">RSVP</h1>
+            <p className="text-lg text-gray-600">Please sign in to view and submit your RSVP</p>
+          </div>
+          <SignInPrompt 
+            title="Sign In to RSVP"
+            message="Please sign in with your email to access your RSVP form."
+          />
+        </div>
+      </main>
+    )
+  }
+
+  // If logged in but not a guest, show error
   if (!guest) {
     return (
-      <main className="min-h-screen p-8">
+      <main className="min-h-screen p-8 bg-gray-50">
         <div className="max-w-4xl mx-auto text-center">
-          <p>Guest not found. Please contact the wedding organizers.</p>
+          <div className="bg-red-50 p-6 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4 text-red-800">Guest Not Found</h2>
+            <p className="text-red-700">Your email ({user.email}) was not found in our guest list. Please contact the wedding organizers if you think this is an error.</p>
+          </div>
         </div>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen p-8 bg-gray-50">
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Yishan & Yitong Wedding</h1>
-          <button
-            onClick={handleSignOut}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Sign Out
-          </button>
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-4">RSVP</h1>
+          <p className="text-lg text-gray-600">Welcome, {user.email}!</p>
         </div>
 
-        <div className="bg-gray-50 p-6 rounded-lg mb-8">
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
           <h2 className="text-2xl font-semibold mb-4">Wedding Details</h2>
           <p className="text-lg mb-2"><strong>Date:</strong> October 4th, 2025</p>
           <p className="text-lg mb-2"><strong>Venue:</strong> Penny Roma</p>
@@ -167,8 +201,8 @@ export default function Dashboard() {
           <p className="text-lg">We can&apos;t wait to celebrate with you!</p>
         </div>
 
-        <div className="bg-white p-6 rounded-lg border">
-          <h2 className="text-2xl font-semibold mb-4">RSVP</h2>
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl font-semibold mb-4">Your RSVP</h2>
           
           {guest.has_rsvped && (
             <div className="bg-green-50 p-4 rounded-lg mb-4">
@@ -209,18 +243,18 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {formData.is_attending && (
+            {formData.is_attending === true && (
               <>
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Dietary preferences or restrictions
+                    Dietary Preferences/Restrictions
                   </label>
                   <textarea
                     value={formData.dietary_preferences}
                     onChange={(e) => setFormData({...formData, dietary_preferences: e.target.value})}
-                    className="w-full p-2 border rounded-md"
+                    placeholder="Please let us know about any dietary restrictions or preferences..."
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     rows={3}
-                    placeholder="Let us know about any dietary restrictions or preferences..."
                   />
                 </div>
 
@@ -232,46 +266,48 @@ export default function Dashboard() {
                       onChange={(e) => setFormData({...formData, has_plus_one: e.target.checked})}
                       className="mr-2"
                     />
-                    I will be bringing a +1
+                    I will be bringing a plus one
                   </label>
                 </div>
 
                 {formData.has_plus_one && (
-                  <div className="space-y-4 pl-6">
+                  <div className="space-y-4 ml-6">
                     <div>
                       <label className="block text-sm font-medium mb-2">
-                        +1 Name
+                        Plus One Name
                       </label>
                       <input
                         type="text"
                         value={formData.plus_one_name}
                         onChange={(e) => setFormData({...formData, plus_one_name: e.target.value})}
-                        className="w-full p-2 border rounded-md"
-                        placeholder="Full name of your +1"
+                        placeholder="Full name"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
+
                     <div>
                       <label className="block text-sm font-medium mb-2">
-                        +1 Email
+                        Plus One Email (optional)
                       </label>
                       <input
                         type="email"
                         value={formData.plus_one_email}
                         onChange={(e) => setFormData({...formData, plus_one_email: e.target.value})}
-                        className="w-full p-2 border rounded-md"
-                        placeholder="Email address of your +1"
+                        placeholder="Email address"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
+
                     <div>
                       <label className="block text-sm font-medium mb-2">
-                        +1 Dietary preferences or restrictions
+                        Plus One Dietary Preferences/Restrictions
                       </label>
                       <textarea
                         value={formData.plus_one_dietary_preferences}
                         onChange={(e) => setFormData({...formData, plus_one_dietary_preferences: e.target.value})}
-                        className="w-full p-2 border rounded-md"
-                        rows={3}
-                        placeholder="Any dietary restrictions or preferences for your +1..."
+                        placeholder="Any dietary restrictions or preferences for your plus one..."
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        rows={2}
                       />
                     </div>
                   </div>
@@ -281,21 +317,21 @@ export default function Dashboard() {
 
             <div>
               <label className="block text-sm font-medium mb-2">
-                Additional notes
+                Additional Notes
               </label>
               <textarea
                 value={formData.additional_notes}
                 onChange={(e) => setFormData({...formData, additional_notes: e.target.value})}
-                className="w-full p-2 border rounded-md"
-                rows={3}
                 placeholder="Any additional notes or special requests..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={3}
               />
             </div>
 
             <button
               type="submit"
               disabled={saving || formData.is_attending === null}
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-300"
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {saving ? 'Saving...' : 'Submit RSVP'}
             </button>

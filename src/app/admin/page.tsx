@@ -1,9 +1,9 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
+import SignInPrompt from '@/components/SignInPrompt'
 
 interface Guest {
   id: string
@@ -22,9 +22,9 @@ interface Guest {
 }
 
 export default function AdminDashboard() {
-  const router = useRouter()
   const supabase = createClient()
   const [user, setUser] = useState<User | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [guests, setGuests] = useState<Guest[]>([])
   const [loading, setLoading] = useState(true)
   const [emailLoading, setEmailLoading] = useState(false)
@@ -64,37 +64,59 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      if (!user) {
-        router.push('/')
-        return
+      const { data: { session } } = await supabase.auth.getSession()
+      setUser(session?.user ?? null)
+
+      if (session?.user) {
+        // Check if user is admin
+        const { data: guestData } = await supabase
+          .from('guests')
+          .select('is_admin')
+          .eq('email', session.user.email!)
+          .single()
+
+        const adminStatus = guestData?.is_admin ?? false
+        setIsAdmin(adminStatus)
+
+        if (adminStatus) {
+          await loadGuestsData()
+        } else {
+          setLoading(false)
+        }
+      } else {
+        setLoading(false)
       }
-
-      setUser(user)
-
-      // Check if user is admin
-      const { data: guestData } = await supabase
-        .from('guests')
-        .select('is_admin')
-        .eq('email', user.email!)
-        .single()
-
-      if (!guestData?.is_admin) {
-        router.push('/dashboard')
-        return
-      }
-
-      await loadGuestsData()
     }
 
     getUser()
-  }, [router, supabase, loadGuestsData])
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/')
-  }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user ?? null)
+        
+        if (session?.user) {
+          // Check if user is admin
+          const { data: guestData } = await supabase
+            .from('guests')
+            .select('is_admin')
+            .eq('email', session.user.email!)
+            .single()
+
+          const adminStatus = guestData?.is_admin ?? false
+          setIsAdmin(adminStatus)
+
+          if (adminStatus) {
+            await loadGuestsData()
+          }
+        } else {
+          setIsAdmin(false)
+          setGuests([])
+        }
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [supabase, loadGuestsData])
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'N/A'
@@ -117,7 +139,7 @@ export default function AdminDashboard() {
           'Content-Type': 'application/json',
           'Authorization': session?.access_token ? `Bearer ${session.access_token}` : ''
         },
-        credentials: 'include', // Include cookies in the request
+        credentials: 'include',
         body: JSON.stringify({
           type,
           recipients,
@@ -151,17 +173,44 @@ export default function AdminDashboard() {
     )
   }
 
+  // If not logged in, show sign-in prompt
+  if (!user) {
+    return (
+      <main className="min-h-screen p-8 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold mb-4">Admin Dashboard</h1>
+            <p className="text-lg text-gray-600">Please sign in to access the admin dashboard</p>
+          </div>
+          <SignInPrompt 
+            title="Admin Sign In"
+            message="Please sign in with your admin email to access the dashboard."
+          />
+        </div>
+      </main>
+    )
+  }
+
+  // If logged in but not admin, show access denied
+  if (!isAdmin) {
+    return (
+      <main className="min-h-screen p-8 bg-gray-50">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-red-50 p-6 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4 text-red-800">Access Denied</h2>
+            <p className="text-red-700">You don&apos;t have admin privileges. Your email ({user.email}) is not authorized to access this page.</p>
+          </div>
+        </div>
+      </main>
+    )
+  }
+
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen p-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Admin Dashboard</h1>
-          <button
-            onClick={handleSignOut}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Sign Out
-          </button>
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-4">Admin Dashboard</h1>
+          <p className="text-lg text-gray-600">Welcome, {user.email}!</p>
         </div>
 
         {/* Stats Cards */}
@@ -171,7 +220,7 @@ export default function AdminDashboard() {
             <p className="text-2xl font-bold text-blue-600">{stats.total}</p>
           </div>
           <div className="bg-green-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-green-800">RSVP&apos;d</h3>
+            <h3 className="text-lg font-semibold text-green-800">RSVP'd</h3>
             <p className="text-2xl font-bold text-green-600">{stats.rsvped}</p>
           </div>
           <div className="bg-yellow-50 p-4 rounded-lg">
@@ -189,7 +238,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Email Actions */}
-        <div className="bg-gray-50 p-6 rounded-lg mb-8">
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
           <h2 className="text-2xl font-semibold mb-4">Email Actions</h2>
           <div className="space-x-4">
             <button
@@ -206,103 +255,62 @@ export default function AdminDashboard() {
             >
               {emailLoading ? 'Sending...' : 'Send RSVP Reminder'}
             </button>
-            <button
-              onClick={async () => {
-                try {
-                  // Get the current session
-                  const { data: { session } } = await supabase.auth.getSession()
-                  
-                  const response = await fetch('/api/test-auth', {
-                    credentials: 'include',
-                    headers: {
-                      'Authorization': session?.access_token ? `Bearer ${session.access_token}` : ''
-                    }
-                  })
-                  const data = await response.json()
-                  console.log('Auth test result:', data)
-                  alert(`Auth test: ${data.authenticated ? 'Authenticated' : 'Not authenticated'}\nUser: ${data.user?.email || 'None'}\nError: ${data.error || 'None'}`)
-                } catch (error) {
-                  console.error('Test auth error:', error)
-                  alert('Test auth failed')
-                }
-              }}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-            >
-              Test Auth
-            </button>
           </div>
         </div>
 
-        {/* Guests Table */}
-        <div className="bg-white rounded-lg border overflow-hidden">
-          <div className="p-6 bg-gray-50 border-b">
+        {/* Guest List */}
+        <div className="bg-white rounded-lg shadow-md">
+          <div className="px-6 py-4 border-b">
             <h2 className="text-2xl font-semibold">Guest List</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-100">
+              <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">RSVP Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Attending</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dietary</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Plus One</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">+1 Dietary</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Notes</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">RSVP Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">RSVP Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attending</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plus One</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dietary</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Completed</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {guests.map((guest) => (
-                  <tr key={guest.id} className="hover:bg-gray-50">
+                  <tr key={guest.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <span className="text-sm font-medium text-gray-900">{guest.email}</span>
+                        <div className="text-sm font-medium text-gray-900">{guest.email}</div>
                         {guest.is_admin && (
-                          <span className="ml-2 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">
-                            Admin
-                          </span>
+                          <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Admin</span>
                         )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-medium rounded ${
+                      <span className={`px-2 py-1 text-xs rounded-full ${
                         guest.has_rsvped 
                           ? 'bg-green-100 text-green-800' 
                           : 'bg-yellow-100 text-yellow-800'
                       }`}>
-                        {guest.has_rsvped ? 'RSVP\'d' : 'Pending'}
+                        {guest.has_rsvped ? 'RSVP&apos;d' : 'Pending'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-medium rounded ${
+                      <span className={`px-2 py-1 text-xs rounded-full ${
                         guest.is_attending === true 
                           ? 'bg-green-100 text-green-800' 
-                          : guest.is_attending === false
+                          : guest.is_attending === false 
                           ? 'bg-red-100 text-red-800'
                           : 'bg-gray-100 text-gray-800'
                       }`}>
                         {guest.is_attending === true ? 'Yes' : guest.is_attending === false ? 'No' : 'Unknown'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
-                      {guest.dietary_preferences || 'None'}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {guest.has_plus_one ? `${guest.plus_one_name || 'Yes'}` : 'No'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {guest.has_plus_one ? (
-                        <div className="text-sm">
-                          <div className="font-medium">{guest.plus_one_name || 'N/A'}</div>
-                          <div className="text-gray-500">{guest.plus_one_email || 'N/A'}</div>
-                        </div>
-                      ) : (
-                        <span className="text-gray-500">No</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
-                      {guest.plus_one_dietary_preferences || 'None'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
-                      {guest.additional_notes || 'None'}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {guest.dietary_preferences ? '✓' : ''}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {formatDate(guest.rsvp_completed_at)}
