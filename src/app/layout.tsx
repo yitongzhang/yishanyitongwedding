@@ -1,10 +1,14 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import localFont from 'next/font/local'
 import './globals.css'
 import { Analytics } from '@vercel/analytics/react'
 import Navigation from '@/components/Navigation'
 
-const inter = Inter({ subsets: ['latin'] })
+const gooperCondensed = localFont({
+  src: '../../public/fonts/GooperCondensed7-Light-Trial.otf',
+  display: 'swap',
+  variable: '--font-gooper-condensed',
+})
 
 export const metadata: Metadata = {
   title: 'Yishan & Yitong Wedding',
@@ -18,8 +22,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Navigation />
+      <body className={gooperCondensed.className}>
+        {/* <Navigation /> */}
         {children}
         <Analytics />
       </body>
