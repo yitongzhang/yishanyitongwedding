@@ -94,7 +94,7 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
           >
             <div className="relative flex">
               <div 
-                className={`absolute top-0 h-full w-1/2 bg-[#332917] rounded-xl transition-transform duration-300 ${
+                className={`absolute top-0 h-full w-1/2 bg-[#332917] rounded-lg transition-transform duration-300 ${
                   formData.attending ? 'translate-x-0' : 'translate-x-full'
                 }`}
               />
@@ -119,15 +119,15 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
             type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full p-4 rounded-lg bg-[#E4B42E] text-[#332917] placeholder-[#866c3b] border border-dashed border-[#332917] outline-none"
+            className="w-full p-4 rounded-t-lg bg-[#E4B42E] text-[#332917] placeholder-[#866c3b] border border-dashed border-[#332917] outline-none"
             placeholder="Full name"
             required
           />
         </div>
         {formData.attending && (
           <>
-            <div>
-              <label className="flex items-center">
+            <div className="!mt-0">
+              <label className="flex items-center border-[#332917] rounded-b-lg px-2 py-2 bg-[#d4a82f] border-dashed border border-t-0">
                 <input
                   type="checkbox"
                   checked={formData.plus_one}
@@ -156,7 +156,7 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
         )}
 
         <div>
-          <label className="block mb-2">Additional Notes</label>
+          <label className="block mb-2">Anything we should know?</label>
           <textarea
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}

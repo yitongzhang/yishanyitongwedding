@@ -74,11 +74,11 @@ export default function EmailSignupModal({
 
   return (
     <div
-      className="fixed text-[#332917] inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 font-gooper-semibold"
+      className="fixed text-[#332917] inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 font-gooper-semibold animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="bg-[#E4B42E] p-8 rounded-3xl -rotate-1 max-h-[90vh] overflow-y-auto scrollbar-hide"
+        className="bg-[#E4B42E] p-8 rounded-3xl -rotate-1 max-h-[90vh] overflow-y-auto scrollbar-hide animate-slide-up-bounce"
         onClick={(e) => e.stopPropagation()}
       >
         {user ? (
