@@ -176,7 +176,7 @@ export default function Home() {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="absolute top-1/2 left-1/2 -translate-x-[300px] translate-y-[300px] bg-[#E4B42E] hover:translate-y-0 text-[#1E1300] font-gooper-semibold py-4 px-6 rounded-full transition-all shadow-lg text-xl"
+            className="absolute top-1/2 left-1/2 -translate-x-[300px] translate-y-[300px] bg-[#E4B42E] text-[#1E1300] font-gooper-semibold py-4 px-6 rounded-full transition-all shadow-lg text-xl"
             style={{ filter: "url(#rough-border)" }}
           >
             <span className="whitespace-nowrap">Sign in to RSVP</span>
@@ -245,6 +245,7 @@ export default function Home() {
             muted
             playsInline
             className="border-8 border-[#FBF2D5] absolute top-1/2 left-1/2 -translate-y-[50px] -translate-x-[50px] w-80 h-auto rotate-3"
+            style={{ filter: 'sepia(20%) saturate(110%) hue-rotate(-10deg) brightness(90%)' }}
           >
             <source src="/img/flowersLoop.mp4" type="video/mp4" />
             Your browser does not support the video tag.
