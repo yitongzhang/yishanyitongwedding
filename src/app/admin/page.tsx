@@ -220,7 +220,7 @@ export default function AdminDashboard() {
             <p className="text-2xl font-bold text-blue-600">{stats.total}</p>
           </div>
           <div className="bg-green-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-green-800">RSVP'd</h3>
+            <h3 className="text-lg font-semibold text-green-800">RSVP&apos;d</h3>
             <p className="text-2xl font-bold text-green-600">{stats.rsvped}</p>
           </div>
           <div className="bg-yellow-50 p-4 rounded-lg">

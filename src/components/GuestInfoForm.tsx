@@ -134,7 +134,7 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
                   onChange={(e) => setFormData({ ...formData, plus_one: e.target.checked })}
                   className="mr-2"
                 />
-                I'm bringing a plus one
+                I&apos;m bringing a plus one
               </label>
             </div>
 

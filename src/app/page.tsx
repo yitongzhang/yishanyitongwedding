@@ -48,9 +48,27 @@ function HomeContent() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <p className="text-xl font-semibold text-gray-700">Loading...</p>
+      <main className="min-h-screen relative overflow-hidden">
+        {/* Brown background layer */}
+        <div className="absolute inset-0 bg-[#332917]" />
+        
+        {/* Lavender field overlay layer */}
+        <div
+          className="absolute inset-20 -rotate-[0.5deg] bg-cover bg-center mix-blend-overlay opacity-50"
+          style={{
+            backgroundImage: 'url("/img/provence.png")',
+          }}
+        />
+        
+        {/* Loading content */}
+        <div className="relative min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="mb-6">
+            </div>
+            <div className=" text-[#E9E1C7] px-8 py-4 rounded-full shadow-lg">
+              <p className="text-xl font-semibold">Loading...</p>
+            </div>
+          </div>
         </div>
       </main>
     );
@@ -280,9 +298,34 @@ function HomeContent() {
 export default function Home() {
   return (
     <Suspense fallback={
-      <main className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <p className="text-xl font-semibold text-gray-700">Loading...</p>
+      <main className="min-h-screen relative overflow-hidden">
+        {/* Brown background layer */}
+        <div className="absolute inset-0 bg-[#332917]" />
+        
+        {/* Lavender field overlay layer */}
+        <div
+          className="absolute inset-20 -rotate-[0.5deg] bg-cover bg-center mix-blend-overlay opacity-50"
+          style={{
+            backgroundImage: 'url("/img/provence.png")',
+          }}
+        />
+        
+        {/* Loading content */}
+        <div className="relative min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="mb-6">
+              <Image
+                src="/img/ourName.png"
+                alt="Yishan and Yitong"
+                width={270}
+                height={140}
+                className="mx-auto opacity-80"
+              />
+            </div>
+            <div className="bg-[#E4B42E] text-[#332917] px-8 py-4 rounded-full shadow-lg">
+              <p className="text-xl font-semibold">Loading...</p>
+            </div>
+          </div>
         </div>
       </main>
     }>

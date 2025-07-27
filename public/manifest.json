@@ -1,0 +1,31 @@
+{
+  "name": "Yishan & Yitong Wedding",
+  "short_name": "Y&Y Wedding",
+  "description": "Wedding website for Yishan and Yitong - October 4, 2025",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#D4A439",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/img/yishanHead.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/img/yitongHead.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/weddingPhoto.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["lifestyle", "events"],
+  "lang": "en-US",
+  "dir": "ltr"
+} 
