@@ -12,10 +12,8 @@ interface GuestInfoFormProps {
 export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
   const [formData, setFormData] = useState({
     name: "",
-    dietary_restrictions: "",
     plus_one: false,
     plus_one_name: "",
-    plus_one_dietary: "",
     attending: true,
     notes: ""
   });
@@ -35,12 +33,10 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
       if (guest) {
         setFormData({
           name: guest.name || "",
-          dietary_restrictions: guest.dietary_restrictions || "",
-          plus_one: guest.plus_one || false,
+          plus_one: guest.has_plus_one || false,
           plus_one_name: guest.plus_one_name || "",
-          plus_one_dietary: guest.plus_one_dietary || "",
-          attending: guest.attending !== false,
-          notes: guest.notes || ""
+          attending: guest.is_attending !== false,
+          notes: guest.additional_notes || ""
         });
       }
     };
@@ -57,7 +53,13 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
       const { error } = await supabase
         .from("guests")
         .update({
-          ...formData,
+          name: formData.name,
+          has_plus_one: formData.plus_one,
+          plus_one_name: formData.plus_one_name,
+          is_attending: formData.attending,
+          additional_notes: formData.notes,
+          has_rsvped: true,
+          rsvp_completed_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         })
         .eq("email", user.email!);
@@ -125,17 +127,6 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
         {formData.attending && (
           <>
             <div>
-              <label className="block mb-2">Dietary Restrictions</label>
-              <input
-                type="text"
-                value={formData.dietary_restrictions}
-                onChange={(e) => setFormData({ ...formData, dietary_restrictions: e.target.value })}
-                className="w-full p-4 rounded-lg bg-[#E4B42E] text-[#332917] placeholder-[#866c3b] border border-dashed border-[#332917] outline-none text-xl"
-                placeholder="Vegetarian, allergies, etc."
-              />
-            </div>
-
-            <div>
               <label className="flex items-center">
                 <input
                   type="checkbox"
@@ -159,16 +150,6 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
                     placeholder="Their full name"
                   />
                 </div>
-                <div>
-                  <label className="block mb-2">Plus One Dietary Restrictions</label>
-                  <input
-                    type="text"
-                    value={formData.plus_one_dietary}
-                    onChange={(e) => setFormData({ ...formData, plus_one_dietary: e.target.value })}
-                    className="w-full p-4 rounded-lg bg-[#E4B42E] text-[#332917] placeholder-[#866c3b] border border-dashed border-[#332917] outline-none text-xl"
-                    placeholder="Their dietary restrictions"
-                  />
-                </div>
               </>
             )}
           </>
@@ -180,7 +161,7 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
             value={formData.notes}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
             className="w-full p-4 rounded-lg bg-[#E4B42E] text-[#332917] placeholder-[#866c3b] border border-dashed border-[#332917] outline-none text-xl"
-            placeholder="Any special requests or notes"
+            placeholder="Any dietary restrictions, allergies, or special requests"
             rows={3}
           />
         </div>

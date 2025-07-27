@@ -13,7 +13,6 @@ export type Database = {
         Row: {
           additional_notes: string | null
           created_at: string | null
-          dietary_preferences: string | null
           email: string
           has_plus_one: boolean | null
           has_rsvped: boolean | null
@@ -21,7 +20,6 @@ export type Database = {
           is_admin: boolean | null
           is_attending: boolean | null
           name: string | null
-          plus_one_dietary_preferences: string | null
           plus_one_email: string | null
           plus_one_name: string | null
           rsvp_completed_at: string | null
@@ -30,7 +28,6 @@ export type Database = {
         Insert: {
           additional_notes?: string | null
           created_at?: string | null
-          dietary_preferences?: string | null
           email: string
           has_plus_one?: boolean | null
           has_rsvped?: boolean | null
@@ -38,7 +35,6 @@ export type Database = {
           is_admin?: boolean | null
           is_attending?: boolean | null
           name?: string | null
-          plus_one_dietary_preferences?: string | null
           plus_one_email?: string | null
           plus_one_name?: string | null
           rsvp_completed_at?: string | null
@@ -47,7 +43,6 @@ export type Database = {
         Update: {
           additional_notes?: string | null
           created_at?: string | null
-          dietary_preferences?: string | null
           email?: string
           has_plus_one?: boolean | null
           has_rsvped?: boolean | null
@@ -55,7 +50,6 @@ export type Database = {
           is_admin?: boolean | null
           is_attending?: boolean | null
           name?: string | null
-          plus_one_dietary_preferences?: string | null
           plus_one_email?: string | null
           plus_one_name?: string | null
           rsvp_completed_at?: string | null
