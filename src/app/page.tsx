@@ -21,12 +21,12 @@ function HomeContent() {
       } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
       setLoading(false);
-      
+
       // Check if returning from auth and open modal
-      if (searchParams.get('auth') === 'success' && session?.user) {
+      if (searchParams.get("auth") === "success" && session?.user) {
         setIsModalOpen(true);
         // Remove the query parameter
-        window.history.replaceState({}, '', window.location.pathname);
+        window.history.replaceState({}, "", window.location.pathname);
       }
     };
 
@@ -36,9 +36,9 @@ function HomeContent() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null);
-      
+
       // If user just signed in, open the modal
-      if (event === 'SIGNED_IN' && session?.user) {
+      if (event === "SIGNED_IN" && session?.user) {
         setIsModalOpen(true);
       }
     });
@@ -51,7 +51,7 @@ function HomeContent() {
       <main className="min-h-screen relative overflow-hidden">
         {/* Brown background layer */}
         <div className="absolute inset-0 bg-[#332917]" />
-        
+
         {/* Lavender field overlay layer */}
         <div
           className="absolute inset-20 -rotate-[0.5deg] bg-cover bg-center mix-blend-overlay opacity-50"
@@ -59,12 +59,11 @@ function HomeContent() {
             backgroundImage: 'url("/img/provence.png")',
           }}
         />
-        
+
         {/* Loading content */}
         <div className="relative min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <div className="mb-6">
-            </div>
+            <div className="mb-6"></div>
             <div className=" text-[#E9E1C7] px-8 py-4 rounded-full shadow-lg">
               <p className="text-xl font-semibold">Loading...</p>
             </div>
@@ -211,7 +210,9 @@ function HomeContent() {
             className="absolute top-1/2 left-1/2 -translate-x-[300px] translate-y-[300px] bg-[#E4B42E] text-[#1E1300] font-gooper-semibold py-4 px-6 rounded-full transition-all shadow-lg text-xl"
             style={{ filter: "url(#rough-border)" }}
           >
-            <span className="whitespace-nowrap">{user ? "Edit your RSVP" : "Sign in to RSVP"}</span>
+            <span className="whitespace-nowrap">
+              {user ? "Edit your RSVP" : "Sign in to RSVP"}
+            </span>
           </button>
 
           <Image
@@ -256,14 +257,14 @@ function HomeContent() {
             height={843}
             className="absolute top-1/2 left-1/2 -translate-x-[340px] -translate-y-[320px]"
           />
-                    <Image
+          <Image
             src="/img/fei.png"
             alt="fei"
             width={100}
             height={843}
             className="absolute top-1/2 left-1/2 -translate-x-[390px] -translate-y-[290px] -rotate-12"
           />
-                    <Image
+          <Image
             src="/img/fei.png"
             alt="fei"
             width={100}
@@ -277,7 +278,10 @@ function HomeContent() {
             muted
             playsInline
             className="border-8 border-[#FBF2D5] absolute top-1/2 left-1/2 -translate-y-[50px] -translate-x-[50px] w-80 h-auto rotate-3"
-            style={{ filter: 'sepia(20%) saturate(110%) hue-rotate(-10deg) brightness(90%)' }}
+            style={{
+              filter:
+                "sepia(20%) saturate(110%) hue-rotate(-10deg) brightness(90%)",
+            }}
           >
             <source src="/img/flowersLoop.mp4" type="video/mp4" />
             Your browser does not support the video tag.
@@ -297,38 +301,40 @@ function HomeContent() {
 
 export default function Home() {
   return (
-    <Suspense fallback={
-      <main className="min-h-screen relative overflow-hidden">
-        {/* Brown background layer */}
-        <div className="absolute inset-0 bg-[#332917]" />
-        
-        {/* Lavender field overlay layer */}
-        <div
-          className="absolute inset-20 -rotate-[0.5deg] bg-cover bg-center mix-blend-overlay opacity-50"
-          style={{
-            backgroundImage: 'url("/img/provence.png")',
-          }}
-        />
-        
-        {/* Loading content */}
-        <div className="relative min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <div className="mb-6">
-              <Image
-                src="/img/ourName.png"
-                alt="Yishan and Yitong"
-                width={270}
-                height={140}
-                className="mx-auto opacity-80"
-              />
-            </div>
-            <div className="bg-[#E4B42E] text-[#332917] px-8 py-4 rounded-full shadow-lg">
-              <p className="text-xl font-semibold">Loading...</p>
+    <Suspense
+      fallback={
+        <main className="min-h-screen relative overflow-hidden">
+          {/* Brown background layer */}
+          <div className="absolute inset-0 bg-[#332917]" />
+
+          {/* Lavender field overlay layer */}
+          <div
+            className="absolute inset-20 -rotate-[0.5deg] bg-cover bg-center mix-blend-overlay opacity-50"
+            style={{
+              backgroundImage: 'url("/img/provence.png")',
+            }}
+          />
+
+          {/* Loading content */}
+          <div className="relative min-h-screen flex items-center justify-center">
+            <div className="text-center">
+              <div className="mb-6">
+                <Image
+                  src="/img/ourName.png"
+                  alt="Yishan and Yitong"
+                  width={270}
+                  height={140}
+                  className="mx-auto opacity-80"
+                />
+              </div>
+              <div className="bg-[#E4B42E] text-[#332917] px-8 py-4 rounded-full shadow-lg">
+                <p className="text-xl font-semibold">Loading...</p>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
-    }>
+        </main>
+      }
+    >
       <HomeContent />
     </Suspense>
   );
