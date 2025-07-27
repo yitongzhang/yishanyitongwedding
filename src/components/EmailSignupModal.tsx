@@ -1,17 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase";
+import { User } from "@supabase/supabase-js";
+import GuestInfoForm from "./GuestInfoForm";
 
 interface EmailSignupModalProps {
   isOpen: boolean;
   onClose: () => void;
+  user: User | null;
 }
 
 export default function EmailSignupModal({
   isOpen,
   onClose,
+  user,
 }: EmailSignupModalProps) {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -74,49 +78,55 @@ export default function EmailSignupModal({
       onClick={onClose}
     >
       <div
-        className="bg-[#E4B42E] p-8 rounded-3xl -rotate-1 "
+        className="bg-[#E4B42E] p-8 rounded-3xl -rotate-1 max-h-[90vh] overflow-y-auto scrollbar-hide"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Sign In Form */}
-        <div
-          className="max-w-md mx-auto"
-          style={{ filter: "url(#signin-rough-border)" }}
-        >
-          <h2 className="text-3xl mb-4">Sign In</h2>
-
-          <form onSubmit={handleSignIn} className="space-y-4">
-            <div>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address"
-                required
-                className="w-full p-6 rounded-lg bg-[#E4B42E] text-[#332917] placeholder-[#866c3b] border border-dashed border-[#332917] outline-none text-xl"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full p-6 rounded-xl bg-[#332917] text-[#E4B42E] text-xl"
-              style={{ filter: "url(#signin-button-rough)" }}
+        {user ? (
+          <GuestInfoForm user={user} onClose={onClose} />
+        ) : (
+          <>
+            {/* Sign In Form */}
+            <div
+              className="max-w-md mx-auto"
+              style={{ filter: "url(#signin-rough-border)" }}
             >
-              {isLoading ? "Sending..." : "Get sign in link"}
-            </button>
-          </form>
-        </div>
-        {statusMessage && (
-          <div
-            className={`mt-4 p-4 rounded-3xl absolute -bottom-20 w-full left-0 ${
-              statusMessage.includes("Error") ||
-              statusMessage.includes("not found")
-                ? "bg-red-900 text-red-400"
-                : "bg-green-900 text-green-400"
-            }`}
-          >
-            {statusMessage}
-          </div>
+              <h2 className="text-3xl mb-4">Sign In</h2>
+
+              <form onSubmit={handleSignIn} className="space-y-4">
+                <div>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email address"
+                    required
+                    className="w-full p-6 rounded-lg bg-[#E4B42E] text-[#332917] placeholder-[#866c3b] border border-dashed border-[#332917] outline-none text-xl"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full p-6 rounded-xl bg-[#332917] text-[#E4B42E] text-xl"
+                  style={{ filter: "url(#signin-button-rough)" }}
+                >
+                  {isLoading ? "Sending..." : "Get sign in link"}
+                </button>
+              </form>
+            </div>
+            {statusMessage && (
+              <div
+                className={`mt-4 p-4 rounded-3xl absolute -bottom-20 w-full left-0 ${
+                  statusMessage.includes("Error") ||
+                  statusMessage.includes("not found")
+                    ? "bg-red-900 text-red-400"
+                    : "bg-green-900 text-green-400"
+                }`}
+              >
+                {statusMessage}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

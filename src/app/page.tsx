@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { createClient } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
 import Image from "next/image";
 import EmailSignupModal from "@/components/EmailSignupModal";
+import { useSearchParams } from "next/navigation";
 
-export default function Home() {
+function HomeContent() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const supabase = createClient();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const getUser = async () => {
@@ -19,6 +21,13 @@ export default function Home() {
       } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
       setLoading(false);
+      
+      // Check if returning from auth and open modal
+      if (searchParams.get('auth') === 'success' && session?.user) {
+        setIsModalOpen(true);
+        // Remove the query parameter
+        window.history.replaceState({}, '', window.location.pathname);
+      }
     };
 
     getUser();
@@ -27,10 +36,15 @@ export default function Home() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null);
+      
+      // If user just signed in, open the modal
+      if (event === 'SIGNED_IN' && session?.user) {
+        setIsModalOpen(true);
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase]);
+  }, [supabase, searchParams]);
 
   if (loading) {
     return (
@@ -179,7 +193,7 @@ export default function Home() {
             className="absolute top-1/2 left-1/2 -translate-x-[300px] translate-y-[300px] bg-[#E4B42E] text-[#1E1300] font-gooper-semibold py-4 px-6 rounded-full transition-all shadow-lg text-xl"
             style={{ filter: "url(#rough-border)" }}
           >
-            <span className="whitespace-nowrap">Sign in to RSVP</span>
+            <span className="whitespace-nowrap">{user ? "Edit your RSVP" : "Sign in to RSVP"}</span>
           </button>
 
           <Image
@@ -257,7 +271,22 @@ export default function Home() {
       <EmailSignupModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        user={user}
       />
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="text-center">
+          <p className="text-xl font-semibold text-gray-700">Loading...</p>
+        </div>
+      </main>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }

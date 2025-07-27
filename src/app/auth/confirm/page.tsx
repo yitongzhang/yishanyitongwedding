@@ -55,7 +55,8 @@ function AuthConfirmContent() {
           if (guest?.is_admin) {
             router.push('/admin')
           } else {
-            router.push('/dashboard')
+            // Redirect to main page with auth success parameter
+            router.push('/?auth=success')
           }
         } else {
           setError('No session created')
