@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         'gooper-condensed': ['var(--font-gooper-condensed)'],
+        'gooper-semibold': ['Gooper7-SemiBold', 'sans-serif'],
       },
     },
   },

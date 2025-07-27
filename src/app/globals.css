@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Gooper7-SemiBold';
+  src: url('/fonts/Gooper7-SemiBold-Trial.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@keyframes wiggle {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(10deg); }
+  75% { transform: rotate(-10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.group:hover .wiggle-animation {
+  animation: wiggle 2s ease-in-out infinite;
+}
+
 /* Reset any potential conflicting styles */
 * {
   box-sizing: border-box;
