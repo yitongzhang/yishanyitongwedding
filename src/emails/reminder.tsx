@@ -45,7 +45,7 @@ export const ReminderEmail = ({ guestEmail }: ReminderEmailProps) => {
             </Text>
             
             <Text style={text}>
-              <Link href="https://yishanandyitong.wedding" style={link}>
+              <Link href={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://yishanandyitong.wedding'}`} style={link}>
                 RSVP Now
               </Link>
             </Text>

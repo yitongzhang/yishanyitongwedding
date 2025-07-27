@@ -54,7 +54,7 @@ export const SaveTheDateEmail = ({ guestEmail }: SaveTheDateEmailProps) => {
                   alt="Left decoration"
                   style={sideImage}
                 />
-                <a href="https://yishanandyitong.wedding">
+                                        <a href={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://yishanandyitong.wedding'}`}>
                   <Img
                     src="https://i.imgur.com/hMQTwMZ.png"
                     alt="Count me in!"

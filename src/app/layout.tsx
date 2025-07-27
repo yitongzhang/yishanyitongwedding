@@ -11,7 +11,7 @@ const gooperCondensed = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Yishan & Yitong Wedding | October 4, 2025',
+  title: "Yishan and Yitong's Wedding",
   description: 'Join us in celebrating the wedding of Yishan Zhang and Yitong Zhang on October 4, 2025 at Penny Roma, San Francisco. RSVP and get all the wedding details here.',
   keywords: ['Yishan Zhang', 'Yitong Zhang', 'Wedding', 'October 2025', 'San Francisco Wedding', 'Penny Roma'],
   authors: [{ name: 'Yishan & Yitong' }],
@@ -27,10 +27,10 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'Yishan & Yitong Wedding | October 4, 2025',
-    description: 'Join us in celebrating our special day! RSVP and get all the wedding details here.',
+    title: "Yishan and Yitong's Wedding",
+    description: 'Join us in celebrating our special day on October 4, 2025! RSVP and get all the wedding details here.',
     url: 'https://yishanyitongwedding.com', // Update with your actual domain
-    siteName: 'Yishan & Yitong Wedding',
+    siteName: "Yishan & Yitong's Wedding",
     images: [
       {
         url: '/img/weddingPhoto.png',
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Yishan & Yitong Wedding | October 4, 2025',
-    description: 'Join us in celebrating our special day! RSVP and get all the wedding details here.',
+    title: "Yishan and Yitong's Wedding",
+    description: 'Join us in celebrating our special day on October 4, 2025! RSVP and get all the wedding details here.',
     images: ['/img/weddingPhoto.png'],
   },
   robots: {
