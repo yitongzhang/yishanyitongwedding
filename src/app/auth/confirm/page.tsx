@@ -72,12 +72,11 @@ function AuthConfirmContent() {
   }, [searchParams, router])
   
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-md mx-auto text-center">
-        <h1 className="text-2xl font-bold mb-4">Confirming your sign in...</h1>
-        <p className="text-lg mb-4">{status}</p>
+    <main className="min-h-screen bg-[#332917] text-[#FCF3D6] flex items-center justify-center p-8">
+      <div className="max-w-md mx-auto text-center  text-[#E4B42E] p-8 rounded-3xl -rotate-1 font-gooper-semibold">
+        <p className="text-xl mb-4">{status}</p>
         {error && (
-          <div className="bg-red-50 text-red-700 p-4 rounded">
+          <div className="bg-red-900 text-red-400 p-4 rounded-3xl mt-4">
             Error: {error}
           </div>
         )}
@@ -89,9 +88,9 @@ function AuthConfirmContent() {
 export default function AuthConfirm() {
   return (
     <Suspense fallback={
-      <main className="min-h-screen p-8">
-        <div className="max-w-md mx-auto text-center">
-          <h1 className="text-2xl font-bold mb-4">Loading...</h1>
+      <main className="min-h-screen bg-[#332917] text-[#FCF3D6] flex items-center justify-center p-8">
+        <div className="max-w-md mx-auto text-center bg-[#E4B42E] text-[#332917] p-8 rounded-3xl -rotate-1 font-gooper-semibold">
+          <h1 className="text-3xl mb-4">Loading...</h1>
         </div>
       </main>
     }>

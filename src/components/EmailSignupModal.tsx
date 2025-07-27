@@ -58,10 +58,10 @@ export default function EmailSignupModal({
         setStatusMessage("Error sending magic link. Please try again.");
         console.error("Error:", error);
       } else {
-        setStatusMessage("Check your email for the magic link to sign in!");
+        setStatusMessage("Check your email for the sign in link!");
       }
     } catch (error) {
-      setStatusMessage("Error sending magic link. Please try again.");
+      setStatusMessage("Error sending link. Please try again.");
       console.error("Error:", error);
     } finally {
       setIsLoading(false);
@@ -73,15 +73,16 @@ export default function EmailSignupModal({
       className="fixed text-[#332917] inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 font-gooper-semibold"
       onClick={onClose}
     >
-      <div className="bg-[#E4B42E] p-8 rounded-3xl -rotate-1 " onClick={(e) => e.stopPropagation()}>
+      <div
+        className="bg-[#E4B42E] p-8 rounded-3xl -rotate-1 "
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Sign In Form */}
         <div
           className="max-w-md mx-auto"
           style={{ filter: "url(#signin-rough-border)" }}
         >
-          <h2 className="text-3xl mb-4">
-            Sign In
-          </h2>
+          <h2 className="text-3xl mb-4">Sign In</h2>
 
           <form onSubmit={handleSignIn} className="space-y-4">
             <div>
@@ -104,21 +105,19 @@ export default function EmailSignupModal({
               {isLoading ? "Sending..." : "Get sign in link"}
             </button>
           </form>
-
-          {statusMessage && (
-            <div
-              className={`mt-4 p-4 rounded-lg ${
-                statusMessage.includes("Error") ||
-                statusMessage.includes("not found")
-                  ? "bg-red-900/20 text-red-400 border border-red-800"
-                  : "bg-green-900/20 text-green-400 border border-green-800"
-              }`}
-            >
-              {statusMessage}
-            </div>
-          )}
         </div>
-
+        {statusMessage && (
+          <div
+            className={`mt-4 p-4 rounded-3xl absolute -bottom-20 w-full left-0 ${
+              statusMessage.includes("Error") ||
+              statusMessage.includes("not found")
+                ? "bg-red-900 text-red-400"
+                : "bg-green-900 text-green-400"
+            }`}
+          >
+            {statusMessage}
+          </div>
+        )}
       </div>
     </div>
   );

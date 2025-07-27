@@ -131,22 +131,22 @@ export default function Home() {
       {/* Brown background layer */}
       <div className="absolute inset-0 bg-[#332917]" />
 
-      <div className="absolute top-6 left-20 text-[#e5d4aa] opacity-30">
+      <div className="absolute top-6 left-20 text-[#e5d4aa] opacity-30 tracking-wide">
         Family style
       </div>
-      <div className="absolute top-6 left-1/2 text-[#e5d4aa] opacity-30">
+      <div className="absolute top-6 left-1/2 text-[#e5d4aa] opacity-30 tracking-wide">
         3000 20th St, SF, CA
       </div>
-      <div className="absolute top-6 right-20 text-[#e5d4aa] opacity-30">
+      <div className="absolute top-6 right-20 text-[#e5d4aa] opacity-30 tracking-wide">
         Penny Roma
       </div>
-      <div className="absolute bottom-6 left-20 text-[#e5d4aa] opacity-30">
+      <div className="absolute bottom-6 left-20 text-[#e5d4aa] opacity-30 tracking-wide">
         RSVP Now
       </div>
-      <div className="absolute bottom-6 left-1/2 text-[#e5d4aa] opacity-30">
+      <div className="absolute bottom-6 left-1/2 text-[#e5d4aa] opacity-30 tracking-wide">
         October 4th
       </div>
-      <div className="absolute bottom-6 right-20 text-[#e5d4aa] opacity-30">
+      <div className="absolute bottom-6 right-20 text-[#e5d4aa] opacity-30 tracking-wide">
         More info soon!
       </div>
       {/* Lavender field overlay layer */}
