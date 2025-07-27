@@ -4,22 +4,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 import SignInPrompt from '@/components/SignInPrompt'
+import { Database } from '@/lib/supabase/types'
 
-interface Guest {
-  id: string
-  email: string
-  created_at: string | null
-  is_admin: boolean | null
-  has_rsvped: boolean | null
-  is_attending: boolean | null
-  dietary_preferences: string | null
-  has_plus_one: boolean | null
-  plus_one_name: string | null
-  plus_one_email: string | null
-  plus_one_dietary_preferences: string | null
-  rsvp_completed_at: string | null
-  additional_notes: string | null
-}
+type Guest = Database['public']['Tables']['guests']['Row']
 
 export default function AdminDashboard() {
   const supabase = createClient()
