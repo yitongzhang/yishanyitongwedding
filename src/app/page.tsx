@@ -162,27 +162,38 @@ function HomeContent() {
       {/* Brown background layer */}
       <div className="absolute inset-0 bg-[#332917]" />
 
-      <div className="absolute top-6 left-20 text-[#e5d4aa] opacity-30 tracking-wide">
+      <div className="absolute md:top-6 top-2  md:left-20 left-2 text-[#e5d4aa] opacity-30 tracking-wide">
         Family style
       </div>
-      <div className="absolute top-6 left-1/2 text-[#e5d4aa] opacity-30 tracking-wide">
+      <div className="absolute md:top-6 top-2  md:left-[1/2] left-[calc(50%-60px)] text-[#e5d4aa] opacity-30 tracking-wide">
         3000 20th St, SF, CA
       </div>
-      <div className="absolute top-6 right-20 text-[#e5d4aa] opacity-30 tracking-wide">
+      <div className="absolute md:top-6 top-2  md:right-20 right-2 text-[#e5d4aa] opacity-30 tracking-wide">
         Penny Roma
       </div>
-      <div className="absolute bottom-6 left-20 text-[#e5d4aa] opacity-30 tracking-wide">
+      <div className="absolute md:bottom-6 bottom-2  md:left-20 left-2 text-[#e5d4aa] opacity-30 tracking-wide">
         RSVP Now
       </div>
-      <div className="absolute bottom-6 left-1/2 text-[#e5d4aa] opacity-30 tracking-wide">
+      <div className="absolute md:bottom-6 bottom-2  md:left-[1/2] left-[calc(50%-50px)] text-[#e5d4aa] opacity-30 tracking-wide">
         October 4th
       </div>
-      <div className="absolute bottom-6 right-20 text-[#e5d4aa] opacity-30 tracking-wide">
+      <div className="absolute md:bottom-6 bottom-2  md:right-20 right-2 text-[#e5d4aa] opacity-30 tracking-wide">
         More info soon!
       </div>
       {/* Lavender field overlay layer */}
       <div
-        className="absolute inset-20 -rotate-[0.5deg] bg-cover bg-center mix-blend-overlay opacity-50"
+        className={`
+          absolute
+          inset-y-10
+          left-0
+          right-0
+          bg-cover
+          bg-center
+          mix-blend-overlay
+          opacity-50
+          md:inset-20
+          md:-rotate-[0.5deg]
+        `}
         style={{
           backgroundImage: 'url("/img/provence.png")',
         }}
@@ -191,7 +202,7 @@ function HomeContent() {
       {/* Content layer */}
       <div className="relative min-h-screen">
         <div className="relative w-full h-screen">
-          <div className="absolute top-1/2 left-1/2 -translate-x-[310px] -translate-y-[320px] rotate-2">
+          <div className="absolute md:top-1/2 md:left-1/2 md:-translate-x-[310px] md:-translate-y-[320px] rotate-2 md:w-[270px] w-[180px] left-[calc(50%-110px)] top-14">
             <Image
               src="/img/ourName.png"
               alt="Yishan and Yitong"
@@ -200,48 +211,57 @@ function HomeContent() {
               className="mx-auto"
             />
           </div>
-          <h1 className="absolute top-1/2 left-1/2 -translate-x-[10px] -translate-y-[200px] text-3xl text-[#FCF3D6] max-w-[22rem] rotate-3">
+          <h1 className="absolute md:top-1/2 top-[550px] md:left-1/2 md:-translate-x-[10px] md:-translate-y-[200px] text-3xl text-[#FCF3D6] left-[calc(50%-160px)] max-w-[320px] md:rotate-3 md:text-left text-center">
             Warmly invite you to our wedding celebration in San Francisco on
             October 4th, 2025
           </h1>
 
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="absolute top-1/2 left-1/2 -translate-x-[300px] translate-y-[300px] bg-[#E4B42E] text-[#1E1300] font-gooper-semibold py-4 px-6 rounded-full transition-all shadow-lg text-xl"
-            style={{ filter: "url(#rough-border)" }}
-          >
-            <span className="whitespace-nowrap">
-              {user ? "Edit your RSVP" : "Sign in to RSVP"}
-            </span>
-          </button>
+          <div className="group">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="absolute bottom-20 left-1/2 -translate-x-1/2 md:top-1/2 md:left-1/2 md:-translate-x-[300px] md:translate-y-[310px] bg-[#E4B42E] text-[#1E1300] font-gooper-semibold py-4 px-6 rounded-full transition-all shadow-lg text-xl md:-rotate-3"
+              style={{ filter: "url(#rough-border)" }}
+            >
+              <span className="whitespace-nowrap">
+                {user ? "Edit your RSVP" : "Sign in to RSVP"}
+              </span>
+            </button>
+
+            <Image
+              src="/img/yishanHead.png"
+              alt="Yishan's head"
+              width={90}
+              height={843}
+              className="absolute top-1/2 left-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-100"
+              style={{
+                animation: 'wiggle-left 3s ease-in-out infinite'
+              }}
+            />
+            <Image
+              src="/img/yitongHead.png"
+              alt="Yitong's head"
+              width={100}
+              height={843}
+              className="absolute top-1/2 left-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-100"
+              style={{
+                animation: 'wiggle-right 2.5s ease-in-out infinite'
+              }}
+            />
+          </div>
 
           <Image
             src="/img/weddingPhoto.png"
             alt="Yishan and Yitong as adults"
             width={300}
             height={843}
-            className="absolute top-1/2 left-1/2 z-10 -translate-x-[300px] -translate-y-[150px]"
+            className="absolute md:top-1/2 left-[calc(50%-120px)] z-10 md:-translate-x-[300px] md:-translate-y-[150px] translate-x-0 translate-y-0 top-40 w-[240px] md:w-[300px]"
           />
           <Image
             src="/img/kidsPhoto.png"
             alt="Yishan and Yitong as kids"
             width={240}
             height={843}
-            className="absolute top-1/2 left-1/2 z-20 translate-y-[162px] -translate-x-[20px] rotate-3"
-          />
-          <Image
-            src="/img/yishanHead.png"
-            alt="Yishan's head"
-            width={90}
-            height={843}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          />
-          <Image
-            src="/img/yitongHead.png"
-            alt="Yitong's head"
-            width={100}
-            height={843}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            className="absolute top-1/2 left-1/2 z-20 translate-y-[162px] -translate-x-[20px] rotate-3 hidden md:block"
           />
           <Image
             src="/img/mou.png"
@@ -262,14 +282,14 @@ function HomeContent() {
             alt="fei"
             width={100}
             height={843}
-            className="absolute top-1/2 left-1/2 -translate-x-[390px] -translate-y-[290px] -rotate-12"
+            className="absolute top-1/2 left-1/2 -translate-x-[390px] -translate-y-[290px] -rotate-12 hidden md:block"
           />
           <Image
             src="/img/fei.png"
             alt="fei"
             width={100}
             height={843}
-            className="absolute top-1/2 left-1/2 -translate-x-[420px] -translate-y-[240px] -rotate-45"
+            className="absolute top-1/2 left-1/2 -translate-x-[420px] -translate-y-[240px] -rotate-45 hidden md:block"
           />
 
           <video
@@ -277,7 +297,7 @@ function HomeContent() {
             loop
             muted
             playsInline
-            className="border-8 border-[#FBF2D5] absolute top-1/2 left-1/2 -translate-y-[50px] -translate-x-[50px] w-80 h-auto rotate-3"
+            className="border-8 border-[#FBF2D5] absolute top-1/2 left-1/2 -translate-y-[50px] -translate-x-[50px] w-80 h-auto rotate-3 hidden md:block"
             style={{
               filter:
                 "sepia(20%) saturate(110%) hue-rotate(-10deg) brightness(90%)",
