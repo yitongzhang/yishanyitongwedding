@@ -132,7 +132,7 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
                   type="checkbox"
                   checked={formData.plus_one}
                   onChange={(e) => setFormData({ ...formData, plus_one: e.target.checked })}
-                  className="mr-2"
+                  className="mr-2 accent-[#332917]"
                 />
                 I&apos;m bringing a plus one
               </label>

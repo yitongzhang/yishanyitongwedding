@@ -202,7 +202,7 @@ function HomeContent() {
       {/* Content layer */}
       <div className="relative min-h-screen">
         <div className="relative w-full h-screen">
-          <div className="absolute md:top-1/2 md:left-1/2 md:-translate-x-[310px] md:-translate-y-[320px] rotate-2 md:w-[270px] w-[180px] left-[calc(50%-110px)] top-14">
+          <div className="absolute hidden md:block md:top-1/2 md:left-1/2 md:-translate-x-[310px] md:-translate-y-[320px] rotate-2 md:w-[270px] w-[180px] left-[calc(50%-110px)] top-14">
             <Image
               src="/img/ourName.png"
               alt="Yishan and Yitong"
@@ -211,7 +211,16 @@ function HomeContent() {
               className="mx-auto"
             />
           </div>
-          <h1 className="absolute md:top-1/2 top-[550px] md:left-1/2 md:-translate-x-[10px] md:-translate-y-[200px] text-3xl text-[#FCF3D6] left-[calc(50%-160px)] max-w-[320px] md:rotate-3 md:text-left text-center">
+          <div className="md:hidden absolute md:top-1/2 md:left-1/2 left-[calc(50%-170px)] top-14">
+            <Image
+              src="/img/ourNameForEmail.png"
+              alt="Yishan and Yitong"
+              width={340}
+              height={140}
+              className="mx-auto"
+            />
+          </div>
+          <h1 className="absolute md:top-1/2 top-[150px] md:left-1/2 md:-translate-x-[10px] md:-translate-y-[200px] md:text-3xl text-xl text-[#FCF3D6] left-[calc(50%-160px)] max-w-[320px] md:rotate-3 md:text-left text-center">
             Warmly invite you to our wedding celebration in San Francisco on
             October 4th, 2025
           </h1>
@@ -219,7 +228,7 @@ function HomeContent() {
           <div className="group">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="absolute bottom-20 left-1/2 md:bottom-auto -translate-x-1/2 md:top-1/2 md:left-1/2 md:-translate-x-[300px] md:translate-y-[310px] bg-[#E4B42E] text-[#1E1300] font-gooper-semibold py-4 px-6 rounded-full transition-all shadow-lg text-xl md:-rotate-3"
+              className="absolute top-[220px] left-1/2 md:bottom-auto -translate-x-1/2 md:top-1/2 md:left-1/2 md:-translate-x-[300px] md:translate-y-[310px] bg-[#E4B42E] text-[#1E1300] font-gooper-semibold py-4 px-6 rounded-full transition-all shadow-lg text-xl md:-rotate-3"
               style={{ filter: "url(#rough-border)" }}
             >
               <span className="whitespace-nowrap">
@@ -254,7 +263,7 @@ function HomeContent() {
             alt="Yishan and Yitong as adults"
             width={300}
             height={843}
-            className="absolute md:top-1/2 left-[calc(50%-120px)] z-10 md:-translate-x-[300px] md:-translate-y-[150px] translate-x-0 translate-y-0 top-40 w-[240px] md:w-[300px]"
+            className="absolute md:top-1/2 left-[calc(50%-100px)] md:left-1/2 z-10 md:-translate-x-[300px] md:-translate-y-[150px] translate-x-0 translate-y-0 top-80 w-[200px] md:w-[300px]"
           />
           <Image
             src="/img/kidsPhoto.png"
