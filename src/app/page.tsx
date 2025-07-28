@@ -36,11 +36,6 @@ function HomeContent() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null);
-
-      // If user just signed in, open the modal
-      if (event === "SIGNED_IN" && session?.user) {
-        setIsModalOpen(true);
-      }
     });
 
     return () => subscription.unsubscribe();
