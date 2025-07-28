@@ -224,11 +224,10 @@ function HomeContent() {
             Warmly invite you to our wedding celebration in San Francisco on
             October 4th, 2025
           </h1>
-
           <div className="group">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="absolute top-[220px] left-1/2 md:bottom-auto -translate-x-1/2 md:top-1/2 md:left-1/2 md:-translate-x-[300px] md:translate-y-[310px] bg-[#E4B42E] text-[#1E1300] font-gooper-semibold py-4 px-6 rounded-full transition-all shadow-lg text-xl md:-rotate-3"
+              className="absolute top-[220px] left-1/2 md:bottom-auto -translate-x-1/2 md:top-1/2 md:left-1/2 md:-translate-x-[300px] md:translate-y-[310px] bg-[#E4B42E] text-[#1E1300] font-gooper-semibold py-4 px-6 rounded-full transition-all shadow-lg text-xl md:-rotate-3 transform transition-transform duration-200 hover:scale-105"
               style={{ filter: "url(#rough-border)" }}
             >
               <span className="whitespace-nowrap">
@@ -256,8 +255,23 @@ function HomeContent() {
                 animation: "wiggle-right 2.5s ease-in-out infinite",
               }}
             />
-          </div>
-
+          </div>{" "}
+          <a
+            href="https://www.google.com/calendar/render?action=TEMPLATE&text=Yishan%20and%20Yitong%27s%20Wedding&dates=20251004/20251005&details=Join%20us%20for%20Yishan%20and%20Yitong%27s%20wedding%20celebration%20in%20San%20Francisco!&location=3000%2020th%20St%2C%20San%20Francisco%2C%20CA&sf=true&output=xml"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute hidden md:block md:top-1/2 md:left-1/2 z-10 md:-translate-x-[8px] md:-translate-y-[288px] translate-x-0 translate-y-0 top-80 rotate-3 md:w-[60px] transition-transform duration-200 hover:scale-105"
+            title="Add to Google Calendar"
+          >
+            <Image
+              src="/img/addToCalendar.svg"
+              alt="Add to calendar"
+              width={100}
+              height={200}
+              className="w-full h-auto"
+              style={{ filter: "url(#rough-border)" }}
+            />
+          </a>
           <Image
             src="/img/weddingPhoto.png"
             alt="Yishan and Yitong as adults"
@@ -300,7 +314,6 @@ function HomeContent() {
             height={843}
             className="absolute top-1/2 left-1/2 -translate-x-[420px] -translate-y-[240px] -rotate-45 hidden md:block"
           />
-
           <video
             autoPlay
             loop
