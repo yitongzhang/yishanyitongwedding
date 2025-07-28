@@ -219,7 +219,7 @@ function HomeContent() {
           <div className="group">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="absolute bottom-20 left-1/2 -translate-x-1/2 md:top-1/2 md:left-1/2 md:-translate-x-[300px] md:translate-y-[310px] bg-[#E4B42E] text-[#1E1300] font-gooper-semibold py-4 px-6 rounded-full transition-all shadow-lg text-xl md:-rotate-3"
+              className="absolute bottom-20 left-1/2 md:bottom-auto -translate-x-1/2 md:top-1/2 md:left-1/2 md:-translate-x-[300px] md:translate-y-[310px] bg-[#E4B42E] text-[#1E1300] font-gooper-semibold py-4 px-6 rounded-full transition-all shadow-lg text-xl md:-rotate-3"
               style={{ filter: "url(#rough-border)" }}
             >
               <span className="whitespace-nowrap">
@@ -234,7 +234,7 @@ function HomeContent() {
               height={843}
               className="absolute top-1/2 left-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-100"
               style={{
-                animation: 'wiggle-left 3s ease-in-out infinite'
+                animation: "wiggle-left 3s ease-in-out infinite",
               }}
             />
             <Image
@@ -244,7 +244,7 @@ function HomeContent() {
               height={843}
               className="absolute top-1/2 left-1/2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-100"
               style={{
-                animation: 'wiggle-right 2.5s ease-in-out infinite'
+                animation: "wiggle-right 2.5s ease-in-out infinite",
               }}
             />
           </div>
