@@ -12,9 +12,13 @@ import {
 
 interface SaveTheDateEmailProps {
   guestEmail: string;
+  guestName?: string | null;
 }
 
-export const SaveTheDateEmail = ({ guestEmail }: SaveTheDateEmailProps) => {
+export const SaveTheDateEmail = ({
+  guestEmail,
+  guestName,
+}: SaveTheDateEmailProps) => {
   return (
     <Html>
       <Head />
@@ -23,60 +27,152 @@ export const SaveTheDateEmail = ({ guestEmail }: SaveTheDateEmailProps) => {
         <Container style={container}>
           {/* Header with corner text */}
           <Section style={headerSection}>
-            <Text style={cornerText}>Family style</Text>
-            <Text style={centerText}>3000 20th St, SF, CA</Text>
-            <Text style={cornerTextRight}>Penny Roma</Text>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                tableLayout: "fixed",
+              }}
+            >
+              <tr>
+                <td
+                  style={{
+                    ...headerTextStyle,
+                    textAlign: "left",
+                    color: "#807349",
+                    width: "33.33%",
+                  }}
+                >
+                  Family style
+                </td>
+                <td
+                  style={{
+                    ...headerTextStyle,
+                    textAlign: "center",
+                    color: "#807349",
+                    width: "33.33%",
+                  }}
+                >
+                  3000 20th St, SF, CA
+                </td>
+                <td
+                  style={{
+                    ...headerTextStyle,
+                    textAlign: "right",
+                    color: "#807349",
+                    width: "33.33%",
+                  }}
+                >
+                  Penny Roma
+                </td>
+              </tr>
+            </table>
           </Section>
 
           {/* Main content section */}
           <Section style={mainSection}>
             {/* Names */}
-            <div style={namesContainer}>
+            <Section style={namesContainer}>
               <Img
                 src="https://i.imgur.com/UHFvnNP.png"
                 alt="Yishan and Yitong"
                 style={namesImage}
               />
-            </div>
+            </Section>
 
             {/* Main invitation text */}
-            <Text style={invitationText}>
-              warmly invite you to our wedding
-              celebration in San Francisco on
+            <Text style={{ ...invitationText, color: "#FCF3D6" }}>
+              warmly invite you to our wedding celebration in San Francisco on
               October 4th, 2025
             </Text>
 
             {/* CTA Button */}
-            <div style={buttonContainer}>
-              <div style={buttonRow}>
-                <Img
-                  src="https://i.imgur.com/r2J8pdv.png"
-                  alt="Left decoration"
-                  style={sideImage}
-                />
-                                        <a href={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://yishanandyitong.wedding'}`}>
-                  <Img
-                    src="https://i.imgur.com/hMQTwMZ.png"
-                    alt="Count me in!"
-                    style={buttonImage}
-                  />
-                </a>
-                <Img
-                  src="https://i.imgur.com/ku4aCHm.png"
-                  alt="Right decoration"
-                  style={sideImage}
-                />
-              </div>
-            </div>
+            <Section style={buttonContainer}>
+              <table style={buttonRow}>
+                <tr>
+                  <td style={{ ...buttonTableCell, width: "120px" }}>
+                    <Img
+                      src="https://i.imgur.com/r2J8pdv.png"
+                      alt="Left decoration"
+                      style={sideImage}
+                    />
+                  </td>
+                  <td
+                    style={{
+                      ...buttonTableCell,
+                      width: "240px",
+                      padding: "0 20px",
+                    }}
+                  >
+                    <a
+                      href={`${
+                        process.env.NEXT_PUBLIC_SITE_URL ||
+                        "https://yishanandyitong.wedding"
+                      }`}
+                    >
+                      <Img
+                        src="https://i.imgur.com/hMQTwMZ.png"
+                        alt="Count me in!"
+                        style={buttonImage}
+                      />
+                    </a>
+                  </td>
+                  <td style={{ ...buttonTableCell, width: "120px" }}>
+                    <Img
+                      src="https://i.imgur.com/ku4aCHm.png"
+                      alt="Right decoration"
+                      style={sideImage}
+                    />
+                  </td>
+                </tr>
+              </table>
+            </Section>
 
             {/* Decorative elements note */}
           </Section>
 
           {/* Footer with corner text */}
           <Section style={footerSection}>
-            <Text style={cornerText}>October 4th</Text>
-            <Text style={centerText}>RSVP now, more info soon!</Text>
-            <Text style={cornerTextRight}>Family & friends</Text>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                tableLayout: "fixed",
+              }}
+            >
+              <tr>
+                <td
+                  style={{
+                    ...headerTextStyle,
+                    textAlign: "left",
+                    color: "#807349",
+                    width: "33.33%",
+                  }}
+                >
+                  October 4th
+                </td>
+                <td
+                  style={{
+                    ...headerTextStyle,
+                    textAlign: "center",
+                    color: "#807349",
+                    width: "33.33%",
+                  }}
+                >
+                  RSVP now, more info soon!
+                </td>
+                <td
+                  style={{
+                    ...headerTextStyle,
+                    textAlign: "right",
+                    color: "#807349",
+                    width: "33.33%",
+                  }}
+                >
+                  Family & friends
+                </td>
+              </tr>
+            </table>
           </Section>
         </Container>
       </Body>
@@ -105,10 +201,26 @@ const container = {
 
 const headerSection = {
   position: "absolute" as const,
-  top: "6px",
+  top: "0px",
   left: "0",
   right: "0",
-  height: "60px",
+  height: "30px",
+  width: "100%",
+  paddingLeft: "30px",
+  paddingRight: "30px",
+};
+
+const headerTextStyle = {
+  color: "#F5E6B3",
+  fontSize: "12px",
+  fontFamily: 'Georgia, "Times New Roman", serif',
+  fontStyle: "italic",
+  fontWeight: "300",
+  margin: "0",
+  padding: "0",
+  verticalAlign: "top",
+  lineHeight: "12px",
+  height: "12px",
 };
 
 const mainSection = {
@@ -122,48 +234,9 @@ const footerSection = {
   left: "0",
   right: "0",
   height: "30px",
-};
-
-const cornerText = {
-  color: "#846f3b",
-  fontSize: "12px",
-  opacity: "0.7",
-  margin: "0",
-  fontFamily: 'Georgia, "Times New Roman", serif',
-  fontStyle: "italic",
-  fontWeight: "300",
-  position: "absolute" as const,
-  top: "0px",
-  left: "30px",
-};
-
-const centerText = {
-  color: "#846f3b",
-  fontSize: "12px",
-  opacity: "0.7",
-  margin: "0",
-  fontFamily: 'Georgia, "Times New Roman", serif',
-  fontStyle: "italic",
-  fontWeight: "300",
-  textAlign: "center" as const,
-  position: "absolute" as const,
-  top: "00px",
-  left: "50%",
-  transform: "translateX(-50%)",
-};
-
-const cornerTextRight = {
-  color: "#846f3b",
-  fontSize: "12px",
-  opacity: "0.7",
-  margin: "0",
-  fontFamily: 'Georgia, "Times New Roman", serif',
-  fontStyle: "italic",
-  fontWeight: "300",
-  textAlign: "right" as const,
-  position: "absolute" as const,
-  top: "00px",
-  right: "30px",
+  width: "100%",
+  paddingLeft: "30px",
+  paddingRight: "30px",
 };
 
 const namesContainer = {
@@ -179,7 +252,7 @@ const namesImage = {
 };
 
 const invitationText = {
-  color: "#FCF3D6",
+  color: "#FCF3D6 !important",
   fontSize: "20px",
   lineHeight: "1.2",
   margin: "0 auto 10px auto",
@@ -196,10 +269,17 @@ const buttonContainer = {
 };
 
 const buttonRow = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: "20px",
+  width: "100%",
+  borderCollapse: "collapse" as const,
+  tableLayout: "fixed" as const,
+  maxWidth: "480px",
+  margin: "0 auto",
+};
+
+const buttonTableCell = {
+  textAlign: "center" as const,
+  verticalAlign: "middle" as const,
+  padding: "0",
 };
 
 const buttonImage = {
@@ -214,4 +294,6 @@ const sideImage = {
   maxWidth: "80px",
   width: "100%",
   height: "auto",
+  margin: "0 auto",
+  display: "block",
 };

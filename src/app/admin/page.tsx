@@ -150,6 +150,53 @@ export default function AdminDashboard() {
     }
   }
 
+  const sendTestEmail = async (type: 'save-the-date' | 'reminder') => {
+    setEmailLoading(true)
+    try {
+      // Get the current session
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      // Only send to admin emails for testing
+      const recipients = guests
+        .filter(guest => guest.is_admin === true)
+        .map(guest => guest.email)
+
+      if (recipients.length === 0) {
+        alert('No admin emails found in the database')
+        setEmailLoading(false)
+        return
+      }
+
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': session?.access_token ? `Bearer ${session.access_token}` : ''
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          type,
+          recipients,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        const successful = data.results.filter((r: any) => r.success).length
+        const failed = data.results.filter((r: any) => !r.success).length
+        alert(`Test email sent to ${recipients.join(', ')}!\n${successful} successful, ${failed} failed`)
+      } else {
+        alert(`Error: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Error sending test email:', error)
+      alert('Error sending test email')
+    } finally {
+      setEmailLoading(false)
+    }
+  }
+
   if (loading) {
     return (
       <main className="min-h-screen p-8">
@@ -227,21 +274,50 @@ export default function AdminDashboard() {
         {/* Email Actions */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
           <h2 className="text-2xl font-semibold mb-4">Email Actions</h2>
-          <div className="space-x-4">
-            <button
-              onClick={() => sendEmail('save-the-date')}
-              disabled={emailLoading}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-300"
-            >
-              {emailLoading ? 'Sending...' : 'Send Save the Date'}
-            </button>
-            <button
-              onClick={() => sendEmail('reminder')}
-              disabled={emailLoading}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:bg-gray-300"
-            >
-              {emailLoading ? 'Sending...' : 'Send RSVP Reminder'}
-            </button>
+          
+          {/* Production Email Buttons */}
+          <div className="mb-4">
+            <h3 className="text-lg font-medium mb-2">Send to All Guests</h3>
+            <div className="space-x-4">
+              <button
+                onClick={() => sendEmail('save-the-date')}
+                disabled={emailLoading}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-300"
+              >
+                {emailLoading ? 'Sending...' : 'Send Save the Date'}
+              </button>
+              <button
+                onClick={() => sendEmail('reminder')}
+                disabled={emailLoading}
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:bg-gray-300"
+              >
+                {emailLoading ? 'Sending...' : 'Send RSVP Reminder'}
+              </button>
+            </div>
+          </div>
+
+          {/* Test Email Buttons */}
+          <div className="border-t pt-4">
+            <h3 className="text-lg font-medium mb-2">Test Emails (Admin Only)</h3>
+            <div className="space-x-4">
+              <button
+                onClick={() => sendTestEmail('save-the-date')}
+                disabled={emailLoading}
+                className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 disabled:bg-gray-300"
+              >
+                {emailLoading ? 'Sending...' : 'Test Save the Date'}
+              </button>
+              <button
+                onClick={() => sendTestEmail('reminder')}
+                disabled={emailLoading}
+                className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 disabled:bg-gray-300"
+              >
+                {emailLoading ? 'Sending...' : 'Test RSVP Reminder'}
+              </button>
+            </div>
+            <p className="text-sm text-gray-600 mt-2">
+              Test emails will only be sent to admin addresses ({guests.filter(g => g.is_admin).map(g => g.email).join(', ')})
+            </p>
           </div>
         </div>
 

@@ -12,9 +12,10 @@ import {
 
 interface ReminderEmailProps {
   guestEmail: string
+  guestName?: string | null
 }
 
-export const ReminderEmail = ({ guestEmail }: ReminderEmailProps) => {
+export const ReminderEmail = ({ guestEmail, guestName }: ReminderEmailProps) => {
   return (
     <Html>
       <Head />
@@ -25,7 +26,7 @@ export const ReminderEmail = ({ guestEmail }: ReminderEmailProps) => {
             <Heading style={h1}>RSVP Reminder</Heading>
             
             <Text style={text}>
-              Hi there!
+              {guestName ? `Dear ${guestName},` : 'Dear Friend,'}
             </Text>
             
             <Text style={text}>
