@@ -102,6 +102,8 @@ export async function POST(request: NextRequest) {
     
     const results = []
     
+    console.log(`Processing ${recipients.length} emails to:`, recipients)
+    
     for (const recipient of recipients) {
       try {
         console.log(`Attempting to send ${type} email to ${recipient}`)
@@ -127,12 +129,16 @@ export async function POST(request: NextRequest) {
         })
 
         if (error) {
-          console.error(`Failed to send to ${recipient}:`, error)
-          results.push({ email: recipient, success: false, error: error.message })
+          console.error(`Failed to send to ${recipient}:`, JSON.stringify(error, null, 2))
+          results.push({ email: recipient, success: false, error: error.message || JSON.stringify(error) })
         } else {
           console.log(`Successfully sent to ${recipient}, ID:`, data?.id)
           results.push({ email: recipient, success: true, id: data?.id })
         }
+        
+        // Add delay to respect Resend's 2 requests per second limit
+        await new Promise(resolve => setTimeout(resolve, 500))
+        
       } catch (error) {
         console.error(`Exception sending to ${recipient}:`, error)
         results.push({ 
