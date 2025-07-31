@@ -136,8 +136,8 @@ export async function POST(request: NextRequest) {
           results.push({ email: recipient, success: true, id: data?.id })
         }
         
-        // Add delay to respect Resend's 2 requests per second limit
-        await new Promise(resolve => setTimeout(resolve, 500))
+        // Add delay to respect Resend's 2 requests per second limit (600ms for safety)
+        await new Promise(resolve => setTimeout(resolve, 600))
         
       } catch (error) {
         console.error(`Exception sending to ${recipient}:`, error)
