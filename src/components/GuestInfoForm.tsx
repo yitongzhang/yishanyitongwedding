@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 
 interface GuestInfoFormProps {
@@ -15,11 +16,12 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
     plus_one: false,
     plus_one_name: "",
     attending: true,
-    notes: ""
+    notes: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const supabase = createClient();
+  const router = useRouter();
 
   // Load existing guest data
   useEffect(() => {
@@ -36,13 +38,19 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
           plus_one: guest.has_plus_one || false,
           plus_one_name: guest.plus_one_name || "",
           attending: guest.is_attending !== false,
-          notes: guest.additional_notes || ""
+          notes: guest.additional_notes || "",
         });
       }
     };
 
     loadGuestData();
   }, [user, supabase]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+    onClose();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +68,7 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
           additional_notes: formData.notes,
           has_rsvped: true,
           rsvp_completed_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq("email", user.email!);
 
@@ -83,30 +91,38 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
 
   return (
     <div className="max-w-md mx-auto transition-all duration-300">
-      <h2 className="text-3xl mb-4">So, are ya coming?</h2>
-
+      <h2 className="text-3xl mb-4">
+        {formData.name
+          ? `Hey ${formData.name}, are you coming?`
+          : "Hey there, are you coming? "}
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-
         <div className="mb-6">
-          <div 
+          <div
             className="relative rounded-xl p-1 border border-dashed border-[#332917] text-[#332917] cursor-pointer"
-            onClick={() => setFormData({ ...formData, attending: !formData.attending })}
+            onClick={() =>
+              setFormData({ ...formData, attending: !formData.attending })
+            }
           >
             <div className="relative flex">
-              <div 
+              <div
                 className={`absolute top-0 h-full w-1/2 bg-[#332917] rounded-lg transition-transform duration-300 ${
-                  formData.attending ? 'translate-x-0' : 'translate-x-full'
+                  formData.attending ? "translate-x-0" : "translate-x-full"
                 }`}
               />
               <div className="relative z-10 flex w-full">
-                <div className={`w-1/2 text-center p-3 text-xl font-bold transition-colors duration-300 ${
-                  formData.attending ? 'text-[#D4A439]' : 'text-[#332917]'
-                }`}>
+                <div
+                  className={`w-1/2 text-center p-3 text-xl font-bold transition-colors duration-300 ${
+                    formData.attending ? "text-[#D4A439]" : "text-[#332917]"
+                  }`}
+                >
                   Yes
                 </div>
-                <div className={`w-1/2 text-center p-3 text-xl font-bold transition-colors duration-300 ${
-                  !formData.attending ? 'text-[#D4A439]' : 'text-[#332917]'
-                }`}>
+                <div
+                  className={`w-1/2 text-center p-3 text-xl font-bold transition-colors duration-300 ${
+                    !formData.attending ? "text-[#D4A439]" : "text-[#332917]"
+                  }`}
+                >
                   No
                 </div>
               </div>
@@ -131,7 +147,9 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
                 <input
                   type="checkbox"
                   checked={formData.plus_one}
-                  onChange={(e) => setFormData({ ...formData, plus_one: e.target.checked })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, plus_one: e.target.checked })
+                  }
                   className="mr-2 accent-[#332917]"
                 />
                 I&apos;m bringing a plus one
@@ -145,7 +163,12 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
                   <input
                     type="text"
                     value={formData.plus_one_name}
-                    onChange={(e) => setFormData({ ...formData, plus_one_name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        plus_one_name: e.target.value,
+                      })
+                    }
                     className="w-full p-4 rounded-lg bg-[#E4B42E] text-[#332917] placeholder-[#866c3b] border border-dashed border-[#332917] outline-none text-xl"
                     placeholder="Their full name"
                   />
@@ -159,7 +182,9 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
           <label className="block mb-2">Anything we should know?</label>
           <textarea
             value={formData.notes}
-            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, notes: e.target.value })
+            }
             className="w-full p-4 rounded-lg bg-[#E4B42E] text-[#332917] placeholder-[#866c3b] border border-dashed border-[#332917] outline-none text-xl"
             placeholder="Any dietary restrictions, allergies, or special requests"
             rows={3}
@@ -172,6 +197,12 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
           className="w-full p-6 rounded-xl bg-[#332917] text-[#E4B42E] text-xl"
         >
           {isLoading ? "Saving..." : "Save RSVP"}
+        </button>
+        <button
+          onClick={handleSignOut}
+          className="text-sm px-3 py-1 rounded-lg text-[#332917] text-center w-full"
+        >
+          Sign Out
         </button>
       </form>
 
@@ -188,4 +219,4 @@ export default function GuestInfoForm({ user, onClose }: GuestInfoFormProps) {
       )}
     </div>
   );
-} 
+}
