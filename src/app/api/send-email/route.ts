@@ -114,13 +114,13 @@ export async function POST(request: NextRequest) {
           ? `RSVP Reminder\n\n${greeting}\n\nWe hope you're as excited as we are about our upcoming wedding!\n\nYishan & Yitong\nDate: October 4th, 2025\nVenue: Penny Roma\nAddress: 3000 20th St, San Francisco, CA 94110\n\nWe haven't received your RSVP yet, and we'd love to know if you can join us! Please visit our wedding website to let us know if you'll be attending.\n\nRSVP at: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://yishanandyitong.wedding'}\n\nIf you have any questions, please don't hesitate to reach out to us.\n\nLooking forward to celebrating with you!\nYishan & Yitong`
           : `Save the Date\n\n${greeting}\n\nYishan and Yitong warmly invite you to our wedding celebration in San Francisco on October 4th, 2025\n\nVenue: Penny Roma\nAddress: 3000 20th St, SF, CA\n\nRSVP at: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://yishanandyitong.wedding'}\n\nMore info coming soon!`
 
-        const { data, error } = await resend.emails.send({
+        const { data, error } = await resend!.emails.send({
           from: 'Yishan & Yitong Wedding <wedding@yishanandyitong.wedding>',
           to: recipient,
           subject,
           html,
           text: plainText,
-          replyTo: 'zha.yitong@gmail.com',
+          reply_to: 'zha.yitong@gmail.com',
           headers: {
             'List-Unsubscribe': '<mailto:zha.yitong@gmail.com?subject=Unsubscribe>',
           },
