@@ -25,10 +25,24 @@ export default function AdminDashboard() {
 
   const loadGuestsData = useCallback(async () => {
     try {
-      const { data, error } = await supabase
+      console.log('Admin page: Starting to load guests data...')
+      
+      // Add timeout to prevent hanging
+      const guestQueryPromise = supabase
         .from('guests')
         .select('*')
         .order('created_at', { ascending: true })
+      
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Guest data query timeout')), 10000)
+      )
+      
+      const { data, error } = await Promise.race([
+        guestQueryPromise,
+        timeoutPromise
+      ]) as any
+
+      console.log('Admin page: Guest data query result:', { data: data?.length, error })
 
       if (error) throw error
 
@@ -42,58 +56,60 @@ export default function AdminDashboard() {
       const plusOnes = data?.filter(g => g.has_plus_one).length || 0
 
       setStats({ total, rsvped, attending, notAttending, plusOnes })
+      console.log('Admin page: Stats calculated:', { total, rsvped, attending, notAttending, plusOnes })
     } catch (error) {
-      console.error('Error loading guests data:', error)
+      console.error('Admin page: Error loading guests data:', error)
+      // Set some default data so the page doesn't hang
+      setGuests([])
+      setStats({ total: 0, rsvped: 0, attending: 0, notAttending: 0, plusOnes: 0 })
     } finally {
-      setLoading(false)
+      console.log('Admin page: loadGuestsData completed')
     }
   }, [supabase])
 
   useEffect(() => {
-    const getUser = async () => {
+    const initializeAuth = async () => {
+      console.log('Admin page: Initializing auth...')
+      
       const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user ?? null)
-
-      if (session?.user) {
-        // Check if user is admin
-        const { data: guestData } = await supabase
-          .from('guests')
-          .select('is_admin')
-          .eq('email', session.user.email!)
-          .single()
-
-        const adminStatus = guestData?.is_admin ?? false
-        setIsAdmin(adminStatus)
-
-        if (adminStatus) {
-          await loadGuestsData()
-        } else {
-          setLoading(false)
+      const currentUser = session?.user ?? null
+      
+      console.log('Admin page: Current user:', currentUser?.email)
+      setUser(currentUser)
+      
+      if (currentUser) {
+        // Simple hardcoded admin check
+        const adminEmails = ['zha.yitong@gmail.com', 'yishan.zhang007@gmail.com']
+        const isUserAdmin = adminEmails.includes(currentUser.email!)
+        
+        console.log('Admin page: Setting admin status to:', isUserAdmin)
+        setIsAdmin(isUserAdmin)
+        
+        if (isUserAdmin) {
+          // Load guest data for admin users
+          loadGuestsData().catch(err => console.error('Failed to load guest data:', err))
         }
-      } else {
-        setLoading(false)
       }
+      
+      console.log('Admin page: Setting loading to false')
+      setLoading(false)
     }
 
-    getUser()
+    initializeAuth()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        setUser(session?.user ?? null)
+        console.log('Admin page: Auth state changed:', event)
+        const currentUser = session?.user ?? null
+        setUser(currentUser)
         
-        if (session?.user) {
-          // Check if user is admin
-          const { data: guestData } = await supabase
-            .from('guests')
-            .select('is_admin')
-            .eq('email', session.user.email!)
-            .single()
-
-          const adminStatus = guestData?.is_admin ?? false
-          setIsAdmin(adminStatus)
-
-          if (adminStatus) {
-            await loadGuestsData()
+        if (currentUser) {
+          const adminEmails = ['zha.yitong@gmail.com', 'yishan.zhang007@gmail.com']
+          const isUserAdmin = adminEmails.includes(currentUser.email!)
+          setIsAdmin(isUserAdmin)
+          
+          if (isUserAdmin) {
+            loadGuestsData().catch(err => console.error('Failed to load guest data:', err))
           }
         } else {
           setIsAdmin(false)
@@ -197,6 +213,8 @@ export default function AdminDashboard() {
     }
   }
 
+  console.log('Admin page render: loading =', loading, 'user =', !!user, 'isAdmin =', isAdmin)
+  
   if (loading) {
     return (
       <main className="min-h-screen p-8">

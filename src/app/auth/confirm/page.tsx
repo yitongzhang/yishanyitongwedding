@@ -43,21 +43,13 @@ function AuthConfirmContent() {
           setStatus('Authentication failed')
         } else if (data?.session && data?.user) {
           setStatus('Success! Redirecting...')
+          console.log('Auth successful, user:', data.user.email)
           
-          // Check if user is admin
-          const { data: guest } = await supabase
-            .from('guests')
-            .select('is_admin')
-            .eq('email', data.user.email!)
-            .single()
-          
-          // Redirect based on user type
-          if (guest?.is_admin) {
-            router.push('/admin')
-          } else {
-            // Redirect to main page with auth success parameter
+          // Simple redirect with a short delay to ensure the session is properly set
+          setTimeout(() => {
+            console.log('Redirecting to home page')
             router.push('/?auth=success')
-          }
+          }, 1000)
         } else {
           setError('No session created')
           setStatus('Authentication failed')

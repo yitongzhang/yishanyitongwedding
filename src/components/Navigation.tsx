@@ -19,13 +19,39 @@ export default function Navigation() {
       
       if (session?.user) {
         // Check if user is admin
-        const { data: guest } = await supabase
-          .from('guests')
-          .select('is_admin')
-          .eq('email', session.user.email!)
-          .single()
+        console.log('Navigation: Checking admin status for email:', session.user.email)
         
-        setIsAdmin(guest?.is_admin ?? false)
+        // Hardcoded admin check as fallback to bypass RLS issues
+        const adminEmails = ['zha.yitong@gmail.com', 'yishan.zhang007@gmail.com']
+        const isHardcodedAdmin = adminEmails.includes(session.user.email!)
+        
+        console.log('Navigation: Hardcoded admin check:', { email: session.user.email, isHardcodedAdmin })
+        
+        // Try database query but fallback to hardcoded check
+        let guest = null
+        try {
+          const { data: directData, error: directError } = await supabase
+            .from('guests')
+            .select('is_admin, email')
+            .eq('email', session.user.email!)
+            .single()
+          
+          console.log('Navigation: Database query result:', { directData, directError })
+          
+          if (directError) {
+            console.log('Navigation: Database query failed, using hardcoded check')
+            guest = { is_admin: isHardcodedAdmin }
+          } else {
+            guest = directData
+          }
+        } catch (err) {
+          console.log('Navigation: Database query exception, using hardcoded check:', err)
+          guest = { is_admin: isHardcodedAdmin }
+        }
+        
+        const adminStatus = guest?.is_admin ?? false
+        console.log('Navigation: Admin status:', adminStatus)
+        setIsAdmin(adminStatus)
       } else {
         setIsAdmin(false)
       }
@@ -39,13 +65,39 @@ export default function Navigation() {
         
         if (session?.user) {
           // Check if user is admin
-          const { data: guest } = await supabase
-            .from('guests')
-            .select('is_admin')
-            .eq('email', session.user.email!)
-            .single()
+          console.log('Navigation (auth change): Checking admin status for email:', session.user.email)
           
-          setIsAdmin(guest?.is_admin ?? false)
+          // Hardcoded admin check as fallback to bypass RLS issues
+          const adminEmails = ['zha.yitong@gmail.com', 'yishan.zhang007@gmail.com']
+          const isHardcodedAdmin = adminEmails.includes(session.user.email!)
+          
+          console.log('Navigation (auth change): Hardcoded admin check:', { email: session.user.email, isHardcodedAdmin })
+          
+          // Try database query but fallback to hardcoded check
+          let guest = null
+          try {
+            const { data: directData, error: directError } = await supabase
+              .from('guests')
+              .select('is_admin, email')
+              .eq('email', session.user.email!)
+              .single()
+            
+            console.log('Navigation (auth change): Database query result:', { directData, directError })
+            
+            if (directError) {
+              console.log('Navigation (auth change): Database query failed, using hardcoded check')
+              guest = { is_admin: isHardcodedAdmin }
+            } else {
+              guest = directData
+            }
+          } catch (err) {
+            console.log('Navigation (auth change): Database query exception, using hardcoded check:', err)
+            guest = { is_admin: isHardcodedAdmin }
+          }
+          
+          const adminStatus = guest?.is_admin ?? false
+          console.log('Navigation (auth change): Admin status:', adminStatus)
+          setIsAdmin(adminStatus)
         } else {
           setIsAdmin(false)
         }
