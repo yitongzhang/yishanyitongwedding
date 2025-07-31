@@ -50,10 +50,10 @@ export default function AdminDashboard() {
       
       // Calculate stats
       const total = data?.length || 0
-      const rsvped = data?.filter(g => g.has_rsvped).length || 0
-      const attending = data?.filter(g => g.is_attending === true).length || 0
-      const notAttending = data?.filter(g => g.is_attending === false).length || 0
-      const plusOnes = data?.filter(g => g.has_plus_one).length || 0
+      const rsvped = data?.filter((g: Guest) => g.has_rsvped).length || 0
+      const attending = data?.filter((g: Guest) => g.is_attending === true).length || 0
+      const notAttending = data?.filter((g: Guest) => g.is_attending === false).length || 0
+      const plusOnes = data?.filter((g: Guest) => g.has_plus_one).length || 0
 
       setStats({ total, rsvped, attending, notAttending, plusOnes })
       console.log('Admin page: Stats calculated:', { total, rsvped, attending, notAttending, plusOnes })
